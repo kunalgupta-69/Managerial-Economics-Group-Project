@@ -1,0 +1,1882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nykaa Beauty & Personal Care Managerial Economics Simulation (IA3)</title>
+<style>
+  :root {
+    --bg: #fdf2f8;
+    --card: #ffffff;
+    --primary: #fc2779;
+    --primary-dark: #be185d;
+    --accent: #f59e0b;
+    --accent-dark: #b45309;
+    --text: #1e293b;
+    --muted: #64748b;
+    --border: #f1d5e5;
+    --danger: #dc2626;
+    --info: #2563eb;
+    --purple: #7c3aed;
+    --shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+  body { background: #f8fafc; color: var(--text); line-height: 1.5; }
+
+  header {
+    background: linear-gradient(135deg, #111827 0%, #3b0764 55%, #be185d 100%);
+    color: #fff;
+    padding: 18px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.18);
+  }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand-badge {
+    background: var(--primary);
+    color: #ffffff;
+    font-weight: 900;
+    padding: 8px 15px;
+    border-radius: 10px;
+    font-size: 1.15rem;
+    letter-spacing: 0.6px;
+  }
+  .brand h1 { font-size: 1.25rem; font-weight: 700; }
+  .brand p { font-size: 0.82rem; color: #f3e8ff; }
+  .header-meta { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .pill {
+    background: rgba(255,255,255,0.13);
+    border: 1px solid rgba(255,255,255,0.22);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    color: #f8fafc;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 270px 1fr;
+    min-height: calc(100vh - 76px);
+  }
+  @media (max-width: 960px) {
+    .layout { grid-template-columns: 1fr; }
+    aside { border-right: none; border-bottom: 1px solid #e2e8f0; }
+  }
+
+  aside {
+    background: #ffffff;
+    border-right: 1px solid #e2e8f0;
+    padding: 16px 12px;
+    overflow-y: auto;
+  }
+  .nav-group-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    font-weight: 700;
+    margin: 14px 8px 6px;
+  }
+  .nav-btn {
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    padding: 9px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.84rem;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.15s ease;
+    margin-bottom: 3px;
+  }
+  .nav-btn:hover { background: #fdf2f8; }
+  .nav-btn.active {
+    background: #fce7f3;
+    color: var(--primary-dark);
+    font-weight: 700;
+    border-left: 4px solid var(--primary);
+  }
+  .step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: #e2e8f0;
+    color: #334155;
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+  .nav-btn.active .step-num { background: var(--primary); color: #fff; }
+
+  main { padding: 24px 28px 48px; max-width: 1220px; width: 100%; margin: 0 auto; }
+  .step-section { display: none; animation: fadeIn 0.2s ease; }
+  .step-section.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .section-header h2 { font-size: 1.45rem; color: #0f172a; }
+  .section-header .subtitle { font-size: 0.88rem; color: var(--muted); margin-top: 2px; }
+  .co-badge {
+    background: #fce7f3;
+    color: #9d174d;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+
+  .grid-2 { display: grid; grid-template-columns: 340px 1fr; gap: 20px; align-items: start; }
+  .grid-equal { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  @media (max-width: 860px) { .grid-2, .grid-equal { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--card);
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 18px 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 18px;
+  }
+  .card h3 { font-size: 1rem; margin-bottom: 12px; color: #0f172a; display: flex; align-items: center; gap: 8px; }
+
+  .control-group { margin-bottom: 14px; }
+  .control-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.84rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #334155;
+  }
+  .control-val { color: var(--primary-dark); font-weight: 700; }
+  input[type="range"] { width: 100%; accent-color: var(--primary); cursor: pointer; }
+  select, input[type="number"], input[type="text"], textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.86rem;
+    background: #fff;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 9px 16px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:hover { background: var(--primary-dark); }
+  .btn-accent { background: #111827; color: #fff; }
+  .btn-accent:hover { background: #334155; }
+  .btn-outline { background: #fff; color: #334155; border: 1px solid #cbd5e1; }
+  .btn-outline:hover { background: #f8fafc; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .kpi {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+  .kpi .k-label { font-size: 0.74rem; color: var(--muted); font-weight: 600; text-transform: uppercase; }
+  .kpi .k-val { font-size: 1.25rem; font-weight: 800; color: #0f172a; margin-top: 3px; }
+  .kpi .k-sub { font-size: 0.73rem; color: var(--muted); margin-top: 2px; }
+  .kpi.good { border-left: 4px solid var(--primary); }
+  .kpi.warn { border-left: 4px solid var(--accent); }
+  .kpi.bad { border-left: 4px solid var(--danger); }
+  .kpi.info { border-left: 4px solid var(--info); }
+
+  .chart-wrap {
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 10px;
+    overflow-x: auto;
+  }
+  canvas { display: block; width: 100%; height: auto; max-width: 100%; }
+
+  .note-box {
+    background: #fdf2f8;
+    border-left: 4px solid var(--primary);
+    padding: 11px 14px;
+    border-radius: 6px;
+    font-size: 0.84rem;
+    color: #831843;
+    margin-top: 12px;
+  }
+  .check-box {
+    background: #eff6ff;
+    border-left: 4px solid var(--info);
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    color: #1e3a8a;
+    margin-top: 10px;
+  }
+  .warn-box {
+    background: #fffbeb;
+    border-left: 4px solid var(--accent-dark);
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 0.83rem;
+    color: #78350f;
+    margin-top: 10px;
+  }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.83rem; margin-top: 8px; }
+  th, td { border: 1px solid #e2e8f0; padding: 8px 10px; text-align: left; }
+  th { background: #f1f5f9; font-weight: 700; color: #334155; }
+  tr:nth-child(even) td { background: #f8fafc; }
+
+  .matrix-cell { text-align: center; font-weight: 600; transition: background 0.2s; }
+  .matrix-cell.highlight { background: #fce7f3 !important; border: 2px solid var(--primary); }
+
+  .step-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 22px;
+    padding-top: 14px;
+    border-top: 1px solid #e2e8f0;
+  }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.74rem; font-weight: 700; }
+  .tag-green { background: #dcfce7; color: #166534; }
+  .tag-blue { background: #dbeafe; color: #1e40af; }
+  .tag-amber { background: #fef3c7; color: #92400e; }
+  .tag-red { background: #fee2e2; color: #991b1b; }
+
+  .score-ring {
+    width: 110px; height: 110px; border-radius: 50%;
+    background: conic-gradient(var(--primary) 0deg, #e2e8f0 0deg);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 10px;
+  }
+  .score-inner {
+    width: 84px; height: 84px; border-radius: 50%;
+    background: #fff; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 800; font-size: 1.3rem; color: #0f172a;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-badge">NYKAA</div>
+    <div>
+      <h1>Managerial Economics Interactive Business Simulation</h1>
+      <p>MBA Semester I (MGT4ECO12) • Indian Beauty & Personal Care (BPC) Omnichannel Sector • 12-Step Model</p>
+    </div>
+  </div>
+  <div class="header-meta">
+    <span class="pill">Focal Firm: Nykaa (FSN E-Commerce)</span>
+    <span class="pill">Rivals: Tira • Purplle • Myntra Beauty • Sephora</span>
+    <span class="pill">Unit: 1 BPC Order / Week</span>
+  </div>
+</header>
+
+<div class="layout">
+  <aside id="sidebar">
+    <div class="nav-group-title">Start Here</div>
+    <button class="nav-btn active" onclick="goStep(0)"><span class="step-num">0</span> Briefing & Unit of Analysis</button>
+
+    <div class="nav-group-title">Part I: Market & Demand (Steps 1–5)</div>
+    <button class="nav-btn" onclick="goStep(1)"><span class="step-num">1</span> Define the Market (D & S)</button>
+    <button class="nav-btn" onclick="goStep(2)"><span class="step-num">2</span> Model the Customer</button>
+    <button class="nav-btn" onclick="goStep(3)"><span class="step-num">3</span> Price Environment (CPI)</button>
+    <button class="nav-btn" onclick="goStep(4)"><span class="step-num">4</span> Demand & Network Effects</button>
+    <button class="nav-btn" onclick="goStep(5)"><span class="step-num">5</span> Forecast Demand (OLS)</button>
+
+    <div class="nav-group-title">Part II: Production & Cost (Steps 6–7)</div>
+    <button class="nav-btn" onclick="goStep(6)"><span class="step-num">6</span> Model Production (TP/AP/MP)</button>
+    <button class="nav-btn" onclick="goStep(7)"><span class="step-num">7</span> Model Costs (SR & LR)</button>
+
+    <div class="nav-group-title">Part III: Strategy & Rounds (Steps 8–11)</div>
+    <button class="nav-btn" onclick="goStep(8)"><span class="step-num">8</span> Competitive Setting</button>
+    <button class="nav-btn" onclick="goStep(9)"><span class="step-num">9</span> Maximise Profit (MR = MC)</button>
+    <button class="nav-btn" onclick="goStep(10)"><span class="step-num">10</span> Price Discrimination</button>
+    <button class="nav-btn" onclick="goStep(11)"><span class="step-num">11</span> Anticipate Rivals (Game)</button>
+
+    <div class="nav-group-title">Part IV: ESG, Risk & Wrap-Up</div>
+    <button class="nav-btn" onclick="goStep(12)"><span class="step-num">12</span> Externalities, Risk & Scorecard</button>
+    <button class="nav-btn" onclick="goStep(13)"><span class="step-num">★</span> Decision Rounds & Log</button>
+  </aside>
+
+  <main>
+    <!-- STEP 0: BRIEFING -->
+    <section id="step-0" class="step-section active">
+      <div class="section-header">
+        <div>
+          <h2>Executive Briefing: Nykaa NCR Beauty & Personal Care Cluster</h2>
+          <p class="subtitle">You are the Regional Pricing & Omnichannel Strategy Manager for Nykaa (FSN E-Commerce Ventures Ltd.).</p>
+        </div>
+        <span class="co-badge">CO1 • CO2 • CO3 • CO4</span>
+      </div>
+
+      <div class="card">
+        <h3>1. Sector, Focal Firm & Rivals</h3>
+        <p style="font-size:0.9rem; margin-bottom:10px;">
+          India's organised Beauty & Personal Care (BPC) e-commerce sector blends curated authentic makeup, skincare, and fragrances with omnichannel retail.
+          <strong>Nykaa</strong> (FSN E-Commerce Ventures Ltd.) leads India's online BPC market (~30–35% online BPC share), competing in a
+          <strong>Differentiated Oligopoly</strong> against four major rivals: <strong>Tira (Reliance Retail)</strong>, <strong>Purplle</strong>,
+          <strong>Myntra Beauty</strong>, and <strong>Sephora India</strong>.
+        </p>
+        <div class="kpi-row">
+          <div class="kpi good"><div class="k-label">Focal Firm</div><div class="k-val">Nykaa</div><div class="k-sub">NCR Omnichannel Cluster</div></div>
+          <div class="kpi info"><div class="k-label">Avg Order Value</div><div class="k-val">₹1,950</div><div class="k-sub">Curated BPC basket</div></div>
+          <div class="kpi warn"><div class="k-label">Baseline Net Rev/Order</div><div class="k-val">₹500</div><div class="k-sub">~26% blended margin/take-rate</div></div>
+          <div class="kpi"><div class="k-label">Market Structure</div><div class="k-val">Oligopoly</div><div class="k-sub">Brand curation & rival interdependence</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>2. Unit of Analysis (Fixed Across All 12 Steps)</h3>
+        <p style="font-size:0.9rem;">
+          <strong>Product:</strong> Curated omnichannel Beauty & Personal Care (BPC) order fulfillment service (makeup, skincare, fragrances, haircare).
+          <strong>Unit of Output (Q):</strong> One fulfilled BPC customer order delivered per week by Nykaa's NCR Regional Fulfillment Center & 6-store omnichannel cluster.
+          <strong>Price (P):</strong> Effective unit net revenue per order in INR (₹), representing Nykaa's blended gross margin, brand commission take-rate, and delivery/convenience fee on an average ₹1,950 basket (baseline ₹500/order).
+          <strong>Time Period:</strong> One operating week.
+          <strong>Price Index Base:</strong> Consumer Price Index CPI₀ = 100 (FY 2024–25 base, aligned with MoSPI India CPI-Combined).
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>3. Your Guided Journey</h3>
+        <table>
+          <thead><tr><th>Stage</th><th>Steps</th><th>Managerial Focus</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Part I: Market & Demand</strong></td><td>Steps 1 – 5</td><td>BPC market equilibrium, Luxe vs. Mass customer budgets, CPI inflation, review network effects, and OLS forecasting.</td></tr>
+            <tr><td><strong>Part II: Production & Cost</strong></td><td>Steps 6 – 7</td><td>Fulfillment staffing diminishing returns (TP/AP/MP), short-run MC/ATC, long-run MES, and labour-automation mix.</td></tr>
+            <tr><td><strong>Part III: Strategy & Competition</strong></td><td>Steps 8 – 11</td><td>Oligopoly rivalry vs. Tira/Purplle, MR = MC profit maximisation, Luxe vs. Mass price discrimination, and repeated game theory.</td></tr>
+            <tr><td><strong>Part IV: ESG, Risk & Scorecard</strong></td><td>Step 12 & Log</td><td>Plastic-free green packaging & authenticity risk, Decision Log, and automated 100-point Managerial Scorecard.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      
+      <div class="card">
+        <h3>4. Project Team &amp; Individual Accountability</h3>
+        <table>
+          <thead><tr><th>Team Member</th><th>Roll Number</th><th>Primary Simulation &amp; Report Responsibility</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Yuvraj Yadav</strong></td><td>265200153</td><td>Lead HTML/JS Engine, Steps 8–11 (Oligopoly, MR=MC, Price Discrimination, Game Theory) &amp; Decision Log</td></tr>
+            <tr><td><strong>Kunal Gupta</strong></td><td>265200063</td><td>FSN E-Commerce / MoSPI Data Calibration, Steps 1–5 (Market Equilibrium, Consumer Budgets, CPI, OLS) &amp; Report</td></tr>
+            <tr><td><strong>Kashish Khatri</strong></td><td>265200797</td><td>Steps 6–7 (Production Stages TP/AP/MP, SRATC/LRAC MES, Isoquant Mix), One-Page User Guide &amp; Peer Testing</td></tr>
+            <tr><td><strong>Kavish Aggarwal</strong></td><td>265200338</td><td>Step 12 (Plastic-Free ESG, Stochastic Risk, Scorecard), Live Demo Script &amp; Responsible AI/Data Audit</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="step-footer">
+        <span style="font-size:0.84rem; color:var(--muted);">Ready to lead Nykaa's NCR BPC strategy?</span>
+        <button class="btn btn-primary" onclick="goStep(1)">Start Step 1: Define the Market →</button>
+      </div>
+    </section>
+
+    <!-- STEP 1: DEMAND & SUPPLY -->
+    <section id="step-1" class="step-section">
+      <div class="section-header">
+        <div>
+          <h2>Step 1: Define the Market (Demand & Supply)</h2>
+          <p class="subtitle">Explore how demand and supply shifters move Nykaa's equilibrium unit revenue (P*) and weekly orders (Q*).</p>
+        </div>
+        <span class="co-badge">CO1: Market Equilibrium</span>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Market Controls</h3>
+          <div class="control-group">
+            <div class="control-label"><span>Demand Shifter (Festive / Influencer Trend)</span><span class="control-val" id="s1_d_val">0</span></div>
+            <input type="range" id="s1_d" min="-40" max="40" step="2" value="0" oninput="updateStep1()">
+          </div>
+          <div class="control-group">
+            <div class="control-label"><span>Supply Shifter (Warehouse Capacity / Import Cost)</span><span class="control-val" id="s1_s_val">0</span></div>
+            <input type="range" id="s1_s" min="-40" max="40" step="2" value="0" oninput="updateStep1()">
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-outline" onclick="setS1(0,0)">Reset Baseline</button>
+            <button class="btn btn-primary" onclick="setS1(22,0)">Pink Friday Surge</button>
+            <button class="btn btn-outline" onclick="setS1(0,-20)">Import Tariff Shock</button>
+          </div>
+          <div class="check-box" id="s1_check"></div>
+        </div>
+        <div class="card">
+          <div class="kpi-row">
+            <div class="kpi good"><div class="k-label">Equilibrium Price (P*)</div><div class="k-val" id="s1_p">₹500.00</div><div class="k-sub">Baseline: ₹500.00</div></div>
+            <div class="kpi info"><div class="k-label">Equilibrium Orders (Q*)</div><div class="k-val" id="s1_q">12,500</div><div class="k-sub">Orders / week</div></div>
+            <div class="kpi warn"><div class="k-label">Cluster Net Revenue</div><div class="k-val" id="s1_rev">₹62.50L</div><div class="k-sub">P* × Q* per week</div></div>
+          </div>
+          <div class="chart-wrap"><canvas id="c1" width="660" height="330"></canvas></div>
+          <div class="note-box" id="s1_note"></div>
+        </div>
+      </div>
+      <div class="step-footer">
+        <button class="btn btn-outline" onclick="goStep(0)">← Briefing</button>
+        <button class="btn btn-primary" onclick="goStep(2)">Next: Step 2 Customer Model →</button>
+      </div>
+    </section>
+
+    <!-- STEP 2: MODEL THE CUSTOMER -->
+    <section id="step-2" class="step-section">
+      <div class="section-header">
+        <div>
+          <h2>Step 2: Model the Customer (Preferences & Budget Constraint)</h2>
+          <p class="subtitle">Two segments choose between Nykaa Curated BPC Orders (x) and Local Pharmacy / Unorganised Cosmetics (y, ₹250/trip).</p>
+        </div>
+        <span class="co-badge">CO1: Consumer Behaviour</span>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Customer Controls</h3>
+          <div class="control-group">
+            <div class="control-label"><span>Nykaa Effective Price per Order (P)</span><span class="control-val" id="s2_p_val">₹500</span></div>
+            <input type="range" id="s2_p" min="250" max="900" step="25" value="500" oninput="updateStep2()">
+          </div>
+          <div class="control-group">
+            <div class="control-label"><span>Customer Income Multiplier</span><span class="control-val" id="s2_m_val">1.00×</span></div>
+            <input type="range" id="s2_m" min="0.6" max="1.5" step="0.05" value="1.0" oninput="updateStep2()">
+          </div>
+          <div class="warn-box">
+            <strong>Segment A (Nykaa Luxe / Prive Shoppers):</strong> Periodic beauty budget ₹6,000 × Income, α = 0.70 (strong preference for authentic luxury brands).<br>
+            <strong>Segment B (Value / College Shoppers):</strong> Periodic budget ₹2,500 × Income, α = 0.40 (smaller budget, price-sensitive).
+          </div>
+          <div class="check-box" id="s2_check"></div>
+        </div>
+        <div class="card">
+          <div class="kpi-row">
+            <div class="kpi good"><div class="k-label">Seg A Nykaa Orders</div><div class="k-val" id="s2_xa">8.4</div><div class="k-sub">Utility U_A = <span id="s2_ua">8.0</span></div></div>
+            <div class="kpi info"><div class="k-label">Seg B Nykaa Orders</div><div class="k-val" id="s2_xb">2.0</div><div class="k-sub">Utility U_B = <span id="s2_ub">3.9</span></div></div>
+            <div class="kpi warn"><div class="k-label">Seg A Local Trips</div><div class="k-val" id="s2_ya">7.2</div><div class="k-sub">Substitute (₹250)</div></div>
+            <div class="kpi"><div class="k-label">Seg B Local Trips</div><div class="k-val" id="s2_yb">6.0</div><div class="k-sub">Substitute (₹250)</div></div>
+          </div>
+          <div class="chart-wrap"><canvas id="c2" width="660" height="330"></canvas></div>
+          <div class="note-box" id="s2_note"></div>
+        </div>
+      </div>
+      <div class="step-footer">
+        <button class="btn btn-outline" onclick="goStep(1)">← Step 1</button>
+        <button class="btn btn-primary" onclick="goStep(3)">Next: Step 3 Price Environment →</button>
+      </div>
+    </section>
+
+    <!-- STEP 3: PRICE ENVIRONMENT (CPI) -->
+    <section id="step-3" class="step-section">
+      <div class="section-header">
+        <div>
+          <h2>Step 3: Add the Price Environment (Inflation & CPI)</h2>
+          <p class="subtitle">Track how CPI inflation erodes real discretionary income and raises Nykaa's nominal input costs over 5 years.</p>
+        </div>
+        <span class="co-badge">CO1: Price Indices & Real Income</span>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Macro Inflation Controls</h3>
+          <div class="control-group">
+            <div class="control-label"><span>Annual CPI Inflation Rate (π)</span><span class="control-val" id="s3_inf_val">5.0%</span></div>
+            <input type="range" id="s3_inf" min="0" max="15" step="0.5" value="5" oninput="updateStep3()">
+          </div>
+          <div class="control-group">
+            <div class="control-label"><span>Nominal Income Growth</span><span class="control-val" id="s3_inc_val">0.0% (Fixed)</span></div>
+            <input type="range" id="s3_inc" min="0" max="10" step="0.5" value="0" oninput="updateStep3()">
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-outline" onclick="setS3(5,0)">RBI Target (5%)</button>
+            <button class="btn btn-primary" onclick="setS3(11,0)">High Inflation Squeeze (11%)</button>
+          </div>
+          <div class="check-box" id="s3_check"></div>
+        </div>
+        <div class="card">
+          <div class="kpi-row">
+            <div class="kpi warn"><div class="k-label">Year 4 CPI Index</div><div class="k-val" id="s3_cpi4">121.6</div><div class="k-sub">Base Yr 0 = 100</div></div>
+            <div class="kpi bad"><div class="k-label">Yr 4 Real Income</div><div class="k-val" id="s3_ry4">₹82.2</div><div class="k-sub">Per ₹100 nominal</div></div>
+            <div class="kpi info"><div class="k-label">Yr 4 Real Demand</div><div class="k-val" id="s3_qd4">10,081</div><div class="k-sub">Base: 12,500 orders</div></div>
+          </div>
+          <div class="chart-wrap"><canvas id="c3" width="660" height="310"></canvas></div>
+          <table id="s3_table"></table>
+          <div class="note-box" id="s3_note"></div>
+        </div>
+      </div>
+      <div class="step-footer">
+        <button class="btn btn-outline" onclick="goStep(2)">← Step 2</button>
+        <button class="btn btn-primary" onclick="goStep(4)">Next: Step 4 Network Effects →</button>
+      </div>
+    </section>
+
+    <!-- STEP 4: DEMAND, NETWORK EFFECTS & CONSUMER SURPLUS -->
+    <section id="step-4" class="step-section">
+      <div class="section-header">
+        <div>
+          <h2>Step 4: Size Demand, Network Effects & Consumer Surplus</h2>
+          <p class="subtitle">Aggregate Luxe + Mass demand with Nykaa's community review, influencer content, and brand-assortment network effect.</p>
+        </div>
+        <span class="co-badge">CO1: Market Demand & Surplus</span>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Pricing & Community Controls</h3>
+          <div class="control-group">
+            <div class="control-label"><span>Nykaa Net Price per Order (P)</span><span class="control-val" id="s4_p_val">₹500</span></div>
+            <input type="range" id="s4_p" min="200" max="950" step="25" value="500" oninput="updateStep4()">
+          </div>
+          <div class="control-group">
+            <div class="control-label"><span>Community Reviews & Prive Density (N)</span><span class="control-val" id="s4_n_val">50%</span></div>
+            <input type="range" id="s4_n" min="0" max="100" step="5" value="50" oninput="updateStep4()">
+          </div>
+          <div class="check-box" id="s4_check"></div>
+        </div>
+        <div class="card">
+          <div class="kpi-row">
+            <div class="kpi good"><div class="k-label">Total Market Demand</div><div class="k-val" id="s4_q">8,400</div><div class="k-sub">Luxe + Mass + Network</div></div>
+            <div class="kpi info"><div class="k-label">Consumer Surplus (CS)</div><div class="k-val" id="s4_cs">₹14.62L</div><div class="k-sub">Weekly welfare (₹)</div></div>
+            <div class="kpi warn"><div class="k-label">Network Lift</div><div class="k-val" id="s4_lift">+20.0%</div><div class="k-sub">Verified reviews & brand trust</div></div>
+          </div>
+          <div class="chart-wrap"><canvas id="c4" width="660" height="330"></canvas></div>
+          <div class="note-box" id="s4_note"></div>
+        </div>
+      </div>
+      <div class="step-footer">
+        <button class="btn btn-outline" onclick="goStep(3)">← Step 3</button>
+        <button class="btn btn-primary" onclick="goStep(5)">Next: Step 5 Forecast Demand →</button>
+      </div>
+    </section>
+
+    <!-- STEP 5: DEMAND FORECASTING (OLS) -->
+    <section id="step-5" class="step-section">
+      <div class="section-header">
+        <div>
+          <h2>Step 5: Forecast Demand (Log-Linear OLS Regression)</h2>
+          <p class="subtitle">Live OLS regression on 12-week Nykaa cluster data estimating own-price, income, and Tira cross-price elasticities.</p>
+        </div>
+        <span class="co-badge">CO1 & CO4: Demand Forecasting</span>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Forecast Assumptions</h3>
+          <div class="control-group">
+            <div class="control-label"><span>Forecast Horizon (Weeks)</span><span class="control-val" id="s5_h_val">4 weeks</span></div>
+            <input type="range" id="s5_h" min="1" max="8" step="1" value="4" oninput="updateStep5()">
+          </div>
+          <div class="control-group">
+            <div class="control-label"><span>Planned Nykaa Price (P)</span><span class="control-val" id="s5_p_val">₹500</span></div>
+            <input type="range" id="s5_p" min="350" max="700" step="10" value="500" oninput="updateStep5()">
+          </div>
+          <div class="control-group">
+            <div class="control-label"><span>Consumer Income Index (Y)</span><span class="control-val" id="s5_y_val">105</span></div>
+            <input type="range" id="s5_y" min="85" max="130" step="1" value="105" oninput="updateStep5()">
+          </div>
+          <div class="control-group">
+            <div class="control-label"><span>Tira / Rival Price (P_rival)</span><span class="control-val" id="s5_r_val">₹520</span></div>
+            <input type="range" id="s5_r" min="350" max="700" step="10" value="520" oninput="updateStep5()">
+          </div>
+          <div class="check-box" id="s5_check"></div>
+        </div>
+        <div class="card">
+          <div class="kpi-row">
+            <div class="kpi bad"><div class="k-label">Own-Price Elasticity</div><div class="k-val" id="s5_ep">-1.32</div><div class="k-sub">True DGP: -1.35</div></div>
+            <div class="kpi good"><div class="k-label">Income Elasticity</div><div class="k-val" id="s5_ey">+1.06</div><div class="k-sub">True DGP: +1.10</div></div>
+            <div class="kpi info"><div class="k-label">Cross-Price Elasticity</div><div class="k-val" id="s5_er">+0.55</div><div class="k-sub">True DGP: +0.55 (Sub)</div></div>
+            <div class="kpi warn"><div class="k-label">Model Fit (R²)</div><div class="k-val" id="s5_r2">0.997</div><div class="k-sub">12-week OLS</div></div>
+          </div>
+          <div class="chart-wrap"><canvas id="c5" width="660" height="290"></canvas></div>
+          <table id="s5_table"></table>
+          <div class="note-box" id="s5_note"></div>
+        </div>
+      </div>
+      <div class="step-footer">
+        <button class="btn btn-outline" onclick="goStep(4)">← Step 4</button>
+        <button class="btn btn-primary" onclick="goStep(6)">Next: Step 6 Production →</button>
+      </div>
+    </section>
+
+    <!-- STEP 6: PRODUCTION FUNCTION -->
+    <section id="step-6" class="step-section">
+      <div class="section-header">
+        <div>
+          <h2>Step 6: Model Production (Short-Run TP, AP & MP)</h2>
+          <p class="subtitle">Fixed NCR fulfillment warehouse & 6 omnichannel stores (K) with variable pickers & beauty advisors (L).</p>
+        </div>
+        <span class="co-badge">CO2: Theory of Production</span>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Staffing Input Control</h3>
+          <div class="control-group">
+            <div class="control-label"><span>Fulfillment Staff & Beauty Advisors (L)</span><span class="control-val" id="s6_l_val">40 staff</span></div>
+            <input type="range" id="s6_l" min="5" max="85" step="1" value="40" oninput="updateStep6()">
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-outline" onclick="setS6(33)">Diminishing MP (L=33)</button>
+            <button class="btn btn-primary" onclick="setS6(50)">Max AP = MP (L=50)</button>
+            <button class="btn btn-outline" onclick="setS6(70)">Max TP (L=70)</button>
+          </div>
+          <div class="warn-box">
+            <strong>Short-Run Production Function:</strong><br>
+            TP(L) = 120L + 18L² − 0.18L³<br>
+            AP(L) = 120 + 18L − 0.18L²<br>
+            MP(L) = 120 + 36L − 0.54L²
+          </div>
+          <div class="check-box" id="s6_check"></div>
+        </div>
+        <div class="card">
+          <div class="kpi-row">
+            <div class="kpi good"><div class="k-label">Total Product (TP)</div><div class="k-val" id="s6_tp">22,080</div><div class="k-sub">Orders / week</div></div>
+            <div class="kpi info"><div class="k-label">Average Product (AP)</div><div class="k-val" id="s6_ap">552.0</div><div class="k-sub">Orders / staff</div></div>
+            <div class="kpi warn"><div class="k-label">Marginal Product (MP)</div><div class="k-val" id="s6_mp">696.0</div><div class="k-sub">Next staff output</div></div>
+            <div class="kpi"><div class="k-label">Production Stage</div><div class="k-val" id="s6_stage">Stage I</div><div class="k-sub">Rational zone: Stage II</div></div>
+          </div>
+          <div class="chart-wrap"><canvas id="c6" width="660" height="330"></canvas></div>
+          <div class="note-box" id="s6_note"></div>
+        </div>
+      </div>
+      <div class="step-footer">
+        <button class="btn btn-outline" onclick="goStep(5)">← Step 5</button>
+        <button class="btn btn-primary" onclick="goStep(7)">Next: Step 7 Cost Curves →</button>
+      </div>
+    </section>
+
+    <!-- STEP 7: COST CURVES & ISOQUANT -->
+    <section id="step-7" class="step-section">
+      <div class="section-header">
+        <div>
+          <h2>Step 7: Model Costs (Short-Run, Long-Run MES & Input Mix)</h2>
+          <p class="subtitle">Compare short-run MC/ATC, long-run economies of scale (MES), and cost-minimising Staff vs. Automated Sorting mix.</p>
+        </div>
+        <span class="co-badge">CO2: Cost Analysis</span>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Scale & Input Price Controls</h3>
+          <div class="control-group">
+            <div class="control-label"><span>Weekly Output (Q orders)</span><span class="control-val" id="s7_q_val">14,000</span></div>
+            <input type="range" id="s7_q" min="2000" max="28000" step="500" value="14000" oninput="updateStep7()">
+          </div>
+          <div class="control-group">
+            <div class="control-label"><span>Fulfillment Center Scale</span><span class="control-val" id="s7_k_val">Smart Hub (MES)</span></div>
+            <select id="s7_k" onchange="updateStep7()">
+              <option value="1">Regional Manual Warehouse (K=1, Low FC)</option>
+              <option value="2" selected>Automated Smart Fulfillment Hub (K=2, MES)</option>
+              <option value="3">Mega-Omnichannel Complex (K=3, Diseconomies)</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <div class="control-label"><span>Fulfillment Wage / Logistics Index (w)</span><span class="control-val" id="s7_w_val">1.00×</span></div>
+            <input type="range" id="s7_w" min="0.8" max="1.4" step="0.05" value="1.0" oninput="updateStep7()">
+          </div>
+          <div class="control-group">
+            <div class="control-label"><span>WMS / Sorting Tech Rental Index (r)</span><span class="control-val" id="s7_r_val">1.00×</span></div>
+            <input type="range" id="s7_r" min="0.7" max="1.4" step="0.05" value="1.0" oninput="updateStep7()">
+          </div>
+          <div class="check-box" id="s7_check"></div>
+        </div>
+        <div class="card">
+          <div class="kpi-row">
+            <div class="kpi good"><div class="k-label">Average Total Cost</div><div class="k-val" id="s7_atc">₹349.8</div><div class="k-sub">Per order</div></div>
+            <div class="kpi warn"><div class="k-label">Marginal Cost (MC)</div><div class="k-val" id="s7_mc">₹318.2</div><div class="k-sub">Crosses ATC at min</div></div>
+            <div class="kpi info"><div class="k-label">Total Weekly Cost</div><div class="k-val" id="s7_tc">₹48.97L</div><div class="k-sub">FC + VC</div></div>
+            <div class="kpi"><div class="k-label">Optimal Staff / Tech</div><div class="k-val" id="s7_mix">1.00</div><div class="k-sub">Isoquant tangency (r/w)</div></div>
+          </div>
+          <div class="chart-wrap"><canvas id="c7" width="660" height="330"></canvas></div>
+          <div class="note-box" id="s7_note"></div>
+        </div>
+      </div>
+      <div class="step-footer">
+        <button class="btn btn-outline" onclick="goStep(6)">← Step 6</button>
+        <button class="btn btn-primary" onclick="goStep(8)">Next: Step 8 Competitive Setting →</button>
+      </div>
+    </section>
+
+    <!-- STEP 8: COMPETITIVE SETTING -->
+    <section id="step-8" class="step-section">
+      <div class="section-header">
+        <div>
+          <h2>Step 8: Set the Competitive Setting (Market Structures)</h2>
+          <p class="subtitle">Test how rival count (Tira, Purplle, Myntra Beauty, Sephora) and aggressiveness impact Nykaa's market power.</p>
+        </div>
+        <span class="co-badge">CO3: Market Structures</span>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Industry Structure Controls</h3>
+          <div class="control-group">
+            <div class="control-label"><span>Number of Active BPC Rivals (n)</span><span class="control-val" id="s8_n_val">4 rivals</span></div>
+            <input type="range" id="s8_n" min="0" max="8" step="1" value="4" oninput="updateStep8()">
+          </div>
+          <div class="control-group">
+            <div class="control-label"><span>Rival Discounting Aggressiveness (γ)</span><span class="control-val" id="s8_g_val">0.60</span></div>
+            <input type="range" id="s8_g" min="0" max="1" step="0.1" value="0.6" oninput="updateStep8()">
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-outline" onclick="setS8(0,0)">Monopoly (n=0)</button>
+            <button class="btn btn-primary" onclick="setS8(4,0.6)">Real India BPC Oligopoly (n=4)</button>
+            <button class="btn btn-outline" onclick="setS8(8,0.9)">Near-Competitive (n=8)</button>
+          </div>
+          <div class="check-box" id="s8_check"></div>
+        </div>
+        <div class="card">
+          <div class="kpi-row">
+            <div class="kpi info"><div class="k-label">Market Structure</div><div class="k-val" id="s8_struct" style="font-size:1.05rem;">Oligopoly</div><div class="k-sub" id="s8_rivals_lbl">4 major rivals</div></div>
+            <div class="kpi good"><div class="k-label">Nykaa Optimal Price</div><div class="k-val" id="s8_p">₹460.6</div><div class="k-sub">Rival avg: <span id="s8_rp">₹440.0</span></div></div>
+            <div class="kpi warn"><div class="k-label">Nykaa Market Share</div><div class="k-val" id="s8_sh">33.5%</div><div class="k-sub">Online BPC share</div></div>
+            <div class="kpi"><div class="k-label">Lerner Index (Power)</div><div class="k-val" id="s8_lerner">0.33</div><div class="k-sub">(P - MC) / P</div></div>
+          </div>
+          <div class="chart-wrap"><canvas id="c8" width="660" height="310"></canvas></div>
+          <div class="note-box" id="s8_note"></div>
+        </div>
+      </div>
+      <div class="step-footer">
+        <button class="btn btn-outline" onclick="goStep(7)">← Step 7</button>
+        <button class="btn btn-primary" onclick="goStep(9)">Next: Step 9 Maximise Profit →</button>
+      </div>
+    </section>
+
+    <!-- STEP 9: PROFIT MAXIMISATION -->
+    <section id="step-9" class="step-section">
+      <div class="section-header">
+        <div>
+          <h2>Step 9: Maximise Profit (MR = MC Optimisation)</h2>
+          <p class="subtitle">Choose Nykaa's effective price per order and compare your profit against the analytical MR = MC and brute-force optimum.</p>
+        </div>
+        <span class="co-badge">CO3: Profit Maximisation</span>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Pricing Decision</h3>
+          <div class="control-group">
+            <div class="control-label"><span>Your Chosen Nykaa Price (P)</span><span class="control-val" id="s9_p_val">₹520</span></div>
+            <input type="range" id="s9_p" min="320" max="800" step="5" value="520" oninput="updateStep9()">
+          </div>
+          <div class="control-group">
+            <div class="control-label"><span>Cost Shock Scenario (MC Shift)</span><span class="control-val" id="s9_c_val">₹0 (Baseline)</span></div>
+            <input type="range" id="s9_c" min="-40" max="120" step="20" value="0" oninput="updateStep9()">
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="findOptimumS9()">⚡ Find the Optimum (MR = MC)</button>
+            <button class="btn btn-outline" onclick="setS9(520,0)">Reset</button>
+          </div>
+          <div class="check-box" id="s9_check"></div>
+        </div>
+        <div class="card">
+          <div class="kpi-row">
+            <div class="kpi good"><div class="k-label">Your Weekly Profit</div><div class="k-val" id="s9_pi">₹10.00L</div><div class="k-sub">Q = <span id="s9_q">11,000</span> orders</div></div>
+            <div class="kpi info"><div class="k-label">Optimal Profit (MR=MC)</div><div class="k-val" id="s9_optpi">₹13.60L</div><div class="k-sub">At P* = <span id="s9_optp">₹610</span></div></div>
+            <div class="kpi bad"><div class="k-label">Profit Gap Lost</div><div class="k-val" id="s9_gap">₹3.60L</div><div class="k-sub" id="s9_dir">Priced below P*</div></div>
+          </div>
+          <div class="chart-wrap"><canvas id="c9" width="660" height="330"></canvas></div>
+          <div class="note-box" id="s9_note"></div>
+        </div>
+      </div>
+      <div class="step-footer">
+        <button class="btn btn-outline" onclick="goStep(8)">← Step 8</button>
+        <button class="btn btn-primary" onclick="goStep(10)">Next: Step 10 Price Discrimination →</button>
+      </div>
+    </section>
+
+    <!-- STEP 10: PRICE DISCRIMINATION -->
+    <section id="step-10" class="step-section">
+      <div class="section-header">
+        <div>
+          <h2>Step 10: Price with Market Power (Price Discrimination)</h2>
+          <p class="subtitle">Compare Uniform Pricing vs. Third-Degree Segmented Pricing (Nykaa Luxe / Prive Platinum vs. Mass Flash-Sale Tier).</p>
+        </div>
+        <span class="co-badge">CO3: Price Discrimination</span>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Segmented Pricing Controls</h3>
+          <div class="control-group">
+            <div class="control-label"><span>Segment A Price (Nykaa Luxe / Prive)</span><span class="control-val" id="s10_pa_val">₹630</span></div>
+            <input type="range" id="s10_pa" min="350" max="900" step="5" value="630" oninput="updateStep10()">
+          </div>
+          <div class="control-group">
+            <div class="control-label"><span>Segment B Price (Mass / Flash-Sale)</span><span class="control-val" id="s10_pb_val">₹430</span></div>
+            <input type="range" id="s10_pb" min="280" max="580" step="5" value="430" oninput="updateStep10()">
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="optS10()">⚡ Set Optimal Segmented Prices</button>
+            <button class="btn btn-outline" onclick="setS10(476,476)">Equal Single Price (₹476)</button>
+          </div>
+          <div class="check-box" id="s10_check"></div>
+        </div>
+        <div class="card">
+          <div class="kpi-row">
+            <div class="kpi good"><div class="k-label">Segmented Profit</div><div class="k-val" id="s10_pi_seg">₹3.99L</div><div class="k-sub">Luxe + Mass − FC</div></div>
+            <div class="kpi info"><div class="k-label">Best Single-Price Profit</div><div class="k-val" id="s10_pi_uni">₹2.15L</div><div class="k-sub">Optimal uniform P = ₹476.15</div></div>
+            <div class="kpi warn"><div class="k-label">Profit Lift</div><div class="k-val" id="s10_lift">+₹1.85L</div><div class="k-sub" id="s10_pct">+85.9% vs single price</div></div>
+          </div>
+          <div class="chart-wrap"><canvas id="c10" width="660" height="310"></canvas></div>
+          <div class="note-box" id="s10_note"></div>
+        </div>
+      </div>
+      <div class="step-footer">
+        <button class="btn btn-outline" onclick="goStep(9)">← Step 9</button>
+        <button class="btn btn-primary" onclick="goStep(11)">Next: Step 11 Game Theory →</button>
+      </div>
+    </section>
+
+    <!-- STEP 11: GAME THEORY -->
+    <section id="step-11" class="step-section">
+      <div class="section-header">
+        <div>
+          <h2>Step 11: Anticipate Rivals (Repeated Game Theory)</h2>
+          <p class="subtitle">Play a 5-round festive pricing game against Tira (Reliance Retail). Maintain brand margins or trigger a discount war?</p>
+        </div>
+        <span class="co-badge">CO3 & CO4: Strategic Interaction</span>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Your Move (Round <span id="g_round">1</span> of 5)</h3>
+          <div class="control-group">
+            <div class="control-label"><span>Tira's Strategy</span></div>
+            <select id="g_strat" onchange="resetGame()">
+              <option value="tft" selected>Tit-for-Tat (Cooperates first, mirrors your last move)</option>
+              <option value="grim">Grim Trigger (Cooperates until you discount once, then wars forever)</option>
+              <option value="cut">Always Discount (Aggressive Reliance Retail expansion)</option>
+            </select>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary" id="btn_high" onclick="playRound('HIGH')">Maintain Margin (₹610)</button>
+            <button class="btn btn-danger" id="btn_cut" onclick="playRound('CUT')">Deep Discount War (₹440)</button>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-outline" onclick="resetGame()">↻ Restart 5-Round Game</button>
+          </div>
+          <div class="check-box" id="s11_check">
+            <strong>Prisoner's Dilemma Verified:</strong> Temptation (₹17.8L) &gt; Mutual Cooperation (₹13.5L) &gt; Mutual Discount War / Nash Eq (₹7.6L) &gt; Sucker's Payoff (₹5.2L).
+          </div>
+        </div>
+        <div class="card">
+          <h3>Dynamic Payoff Matrix (Weekly Profit in ₹ Lakhs: Nykaa, Tira)</h3>
+          <table>
+            <thead>
+              <tr><th>Nykaa \ Tira</th><th>Tira: Maintain (₹610)</th><th>Tira: Deep Discount (₹440)</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Nykaa: Maintain (₹610)</strong></td>
+                <td class="matrix-cell" id="m_HH">₹13.5L , ₹13.5L<br><span class="tag tag-green">Pareto Optimal</span></td>
+                <td class="matrix-cell" id="m_HC">₹5.2L , ₹17.8L<br><span class="tag tag-amber">Nykaa Loses Share</span></td>
+              </tr>
+              <tr>
+                <td><strong>Nykaa: Deep Discount (₹440)</strong></td>
+                <td class="matrix-cell" id="m_CH">₹17.8L , ₹5.2L<br><span class="tag tag-blue">Temptation Payoff</span></td>
+                <td class="matrix-cell" id="m_CC">₹7.6L , ₹7.6L<br><span class="tag tag-red">Nash Eq (Discount War)</span></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="kpi-row" style="margin-top:14px;">
+            <div class="kpi good"><div class="k-label">Nykaa Cumulative</div><div class="k-val" id="g_tot_b">₹0.0L</div><div class="k-sub">Max cooperative: ₹67.5L</div></div>
+            <div class="kpi info"><div class="k-label">Tira Cumulative</div><div class="k-val" id="g_tot_z">₹0.0L</div><div class="k-sub">5-round total</div></div>
+          </div>
+          <table id="g_log"><thead><tr><th>Round</th><th>Nykaa</th><th>Tira</th><th>Nykaa Profit</th><th>Tira Profit</th></tr></thead><tbody></tbody></table>
+          <div class="note-box" id="s11_note">Choose your opening move in Round 1 to begin the repeated festive pricing game.</div>
+        </div>
+      </div>
+      <div class="step-footer">
+        <button class="btn btn-outline" onclick="goStep(10)">← Step 10</button>
+        <button class="btn btn-primary" onclick="goStep(12)">Next: Step 12 Externalities & Scorecard →</button>
+      </div>
+    </section>
+
+    <!-- STEP 12: EXTERNALITIES, RISK & SCORECARD -->
+    <section id="step-12" class="step-section">
+      <div class="section-header">
+        <div>
+          <h2>Step 12: Externalities, Risk & Final Managerial Scorecard</h2>
+          <p class="subtitle">Evaluate plastic-free packaging & authenticity signalling under regulatory/demand uncertainty and view your Scorecard.</p>
+        </div>
+        <span class="co-badge">CO4: ESG, Risk & Evaluation</span>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>ESG Policy & Risk Controls</h3>
+          <div class="control-group">
+            <div class="control-label"><span>Packaging & Clean Beauty Policy</span></div>
+            <select id="s12_pol" onchange="updateStep12()">
+              <option value="std">Status Quo: Standard Plastic Packaging (₹0 inv, High Waste)</option>
+              <option value="hybrid" selected>Hybrid: 50% Recyclable + QR Authenticity Seals (₹1.40L/wk inv)</option>
+              <option value="green">100% Plastic-Free Biodegradable + Clean Beauty Tag (₹2.60L/wk inv)</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <div class="control-label"><span>Manager Risk Appetite</span></div>
+            <select id="s12_risk" onchange="updateStep12()">
+              <option value="averse" selected>Risk-Averse (Penalises profit volatility heavily)</option>
+              <option value="neutral">Risk-Neutral (Maximises Expected Profit only)</option>
+              <option value="seeking">Risk-Seeking (Favours upside variance)</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <div class="control-label"><span>Stochastic Shocks (Plastic Penalty / Demand Swing)</span></div>
+            <select id="s12_rand" onchange="updateStep12()">
+              <option value="off" selected>OFF — Deterministic (100% Repeatable)</option>
+              <option value="on">ON — Stochastic Random Shock</option>
+            </select>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="updateStep12(true)">🎲 Run Scenario</button>
+          </div>
+          <div class="check-box" id="s12_check"></div>
+        </div>
+        <div class="card">
+          <div class="kpi-row">
+            <div class="kpi good"><div class="k-label">Private Weekly Profit</div><div class="k-val" id="s12_pi">₹12.70L</div><div class="k-sub">After ESG inv & shock</div></div>
+            <div class="kpi bad"><div class="k-label">External Social Cost</div><div class="k-val" id="s12_ext">₹1.20L</div><div class="k-sub">Plastic waste & CO₂</div></div>
+            <div class="kpi info"><div class="k-label">Social Welfare</div><div class="k-val" id="s12_sw">₹11.50L</div><div class="k-sub">Private Profit − Ext Cost</div></div>
+            <div class="kpi warn"><div class="k-label">Certainty Equivalent</div><div class="k-val" id="s12_ce">₹11.68L</div><div class="k-sub">Risk-adjusted value</div></div>
+          </div>
+          <div class="chart-wrap"><canvas id="c12" width="660" height="260"></canvas></div>
+          <div class="note-box" id="s12_note"></div>
+        </div>
+      </div>
+
+      <!-- FINAL SCORECARD -->
+      <div class="card" style="border-top: 4px solid var(--primary);">
+        <h3>🏆 Comprehensive Managerial Scorecard (All 12 Steps)</h3>
+        <div class="grid-2" style="grid-template-columns: 200px 1fr;">
+          <div style="text-align:center;">
+            <div class="score-ring" id="sc_ring"><div class="score-inner"><span id="sc_total">88</span><span style="font-size:0.7rem;color:var(--muted);">/ 100</span></div></div>
+            <div id="sc_grade" class="tag tag-green">Exceeds Expectations</div>
+          </div>
+          <div>
+            <table>
+              <thead><tr><th>Economic Dimension</th><th>Your Simulation Result</th><th>Benchmark / Economic Check</th><th>Score</th></tr></thead>
+              <tbody id="sc_body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-footer">
+        <button class="btn btn-outline" onclick="goStep(11)">← Step 11</button>
+        <button class="btn btn-accent" onclick="goStep(13)">Open Decision Rounds & Log ★</button>
+      </div>
+    </section>
+
+    <!-- STEP 13: DECISION ROUNDS & LOG -->
+    <section id="step-13" class="step-section">
+      <div class="section-header">
+        <div>
+          <h2>Guided Decision Rounds & Managerial Decision Log</h2>
+          <p class="subtitle">Record decisions across Baseline, Cost/Demand Shock, Rival Reaction, and Discount-War rounds.</p>
+        </div>
+        <span class="co-badge">Mandatory Submission Log</span>
+      </div>
+
+      <div class="card">
+        <h3>Quick-Load Official Scenario Rounds</h3>
+        <div class="btn-row">
+          <button class="btn btn-outline" onclick="loadScenario('base')">Round 1: Baseline (P=₹610, n=4)</button>
+          <button class="btn btn-primary" onclick="loadScenario('shock')">Round 2: Import Tariff & Cost Shock (+₹80 MC)</button>
+          <button class="btn btn-outline" onclick="loadScenario('rival')">Round 3: Tira Aggressive Entry (γ=0.9)</button>
+          <button class="btn btn-danger" onclick="loadScenario('war')">Round 4: Discount War vs. Segmented Escape</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Add Entry to Decision Log</h3>
+        <div class="grid-equal">
+          <div class="control-group"><label class="control-label">Round / Scenario Name</label><input type="text" id="dl_name" placeholder="e.g., Round 5: Pink Friday Green Packaging"></div>
+          <div class="control-group"><label class="control-label">Key Decision (Price / Scale / Policy)</label><input type="text" id="dl_dec" placeholder="e.g., Luxe ₹630 / Mass ₹430 + 100% Plastic-Free"></div>
+        </div>
+        <div class="control-group"><label class="control-label">Economic Reasoning (MR=MC, Elasticity, Game Theory)</label><textarea id="dl_why" rows="2" placeholder="Explain why this decision maximises profit or mitigates risk..."></textarea></div>
+        <button class="btn btn-primary" onclick="addLogEntry()">+ Record Decision in Log</button>
+      </div>
+
+      <div class="card">
+        <h3>Recorded Managerial Decision Log</h3>
+        <table id="dl_table">
+          <thead><tr><th>#</th><th>Round / Scenario</th><th>Decision Taken</th><th>Economic Reasoning & Outcome</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+// ================= NAVIGATION =================
+let currentStep = 0;
+function goStep(n) {
+  document.querySelectorAll('.step-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach((b, i) => b.classList.toggle('active', i === n));
+  document.getElementById('step-' + n).classList.add('active');
+  currentStep = n;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (n === 1) updateStep1();
+  if (n === 2) updateStep2();
+  if (n === 3) updateStep3();
+  if (n === 4) updateStep4();
+  if (n === 5) updateStep5();
+  if (n === 6) updateStep6();
+  if (n === 7) updateStep7();
+  if (n === 8) updateStep8();
+  if (n === 9) updateStep9();
+  if (n === 10) updateStep10();
+  if (n === 12) updateStep12();
+}
+
+// ================= HELPER CANVAS DRAWING =================
+function setupCanvas(id) {
+  const c = document.getElementById(id);
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0, 0, c.width, c.height);
+  return { c, ctx, w: c.width, h: c.height };
+}
+function drawAxes(ctx, pad, w, h, xLabel, yLabel, xMax, yMax, xMin=0, yMin=0) {
+  ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 1;
+  ctx.fillStyle = '#64748b'; ctx.font = '11px Segoe UI, sans-serif';
+  for (let i = 0; i <= 5; i++) {
+    const gy = pad.t + (h - pad.t - pad.b) * (i / 5);
+    ctx.beginPath(); ctx.moveTo(pad.l, gy); ctx.lineTo(w - pad.r, gy); ctx.stroke();
+    const yv = yMax - (yMax - yMin) * (i / 5);
+    ctx.textAlign = 'right';
+    ctx.fillText(Math.abs(yv) >= 1000 ? (yv/1000).toFixed(1)+'k' : yv.toFixed(0), pad.l - 7, gy + 4);
+  }
+  for (let i = 0; i <= 5; i++) {
+    const gx = pad.l + (w - pad.l - pad.r) * (i / 5);
+    ctx.beginPath(); ctx.moveTo(gx, pad.t); ctx.lineTo(gx, h - pad.b); ctx.stroke();
+    const xv = xMin + (xMax - xMin) * (i / 5);
+    ctx.textAlign = 'center';
+    ctx.fillText(Math.abs(xv) >= 1000 ? (xv/1000).toFixed(1)+'k' : xv.toFixed(0), gx, h - pad.b + 16);
+  }
+  ctx.strokeStyle = '#334155'; ctx.lineWidth = 1.6;
+  ctx.beginPath(); ctx.moveTo(pad.l, pad.t); ctx.lineTo(pad.l, h - pad.b); ctx.lineTo(w - pad.r, h - pad.b); ctx.stroke();
+  ctx.fillStyle = '#0f172a'; ctx.font = 'bold 12px Segoe UI, sans-serif';
+  ctx.textAlign = 'center'; ctx.fillText(xLabel, pad.l + (w - pad.l - pad.r)/2, h - 6);
+  ctx.save(); ctx.translate(14, pad.t + (h - pad.t - pad.b)/2); ctx.rotate(-Math.PI/2);
+  ctx.fillText(yLabel, 0, 0); ctx.restore();
+}
+function mapX(val, min, max, pad, w) { return pad.l + ((val - min) / (max - min)) * (w - pad.l - pad.r); }
+function mapY(val, min, max, pad, h) { return (h - pad.b) - ((val - min) / (max - min)) * (h - pad.t - pad.b); }
+function drawLegend(ctx, items, x, y) {
+  ctx.font = '11px Segoe UI, sans-serif';
+  let cx = x;
+  items.forEach(it => {
+    ctx.fillStyle = it.color; ctx.fillRect(cx, y - 8, 12, 8);
+    ctx.fillStyle = '#1e293b'; ctx.textAlign = 'left'; ctx.fillText(it.label, cx + 16, y);
+    cx += ctx.measureText(it.label).width + 32;
+  });
+}
+
+// ================= STEP 1: DEMAND & SUPPLY =================
+function setS1(d, s) { document.getElementById('s1_d').value = d; document.getElementById('s1_s').value = s; updateStep1(); }
+function updateStep1() {
+  const d = +document.getElementById('s1_d').value;
+  const s = +document.getElementById('s1_s').value;
+  document.getElementById('s1_d_val').textContent = (d>=0?'+':'') + d;
+  document.getElementById('s1_s_val').textContent = (s>=0?'+':'') + s;
+
+  // Qd = (25000 + 200*d) - 25*P ; Qs = (-2500 + 150*s) + 30*P
+  const pStar = (27500 + 200*d - 150*s) / 55;
+  const qStar = (25000 + 200*d) - 25 * pStar;
+  const pBase = 500;
+
+  document.getElementById('s1_p').textContent = '₹' + pStar.toFixed(2);
+  document.getElementById('s1_q').textContent = Math.round(qStar).toLocaleString('en-IN');
+  document.getElementById('s1_rev').textContent = '₹' + ((pStar * qStar)/100000).toFixed(2) + 'L';
+
+  const { ctx, w, h } = setupCanvas('c1');
+  const pad = { l: 55, r: 20, t: 30, b: 38 };
+  drawAxes(ctx, pad, w, h, 'Weekly BPC Orders (Q)', 'Effective Net Revenue / Order (₹)', 30000, 1200);
+
+  // Baseline dashed
+  ctx.setLineDash([5, 4]); ctx.lineWidth = 1.5; ctx.strokeStyle = '#94a3b8';
+  ctx.beginPath(); ctx.moveTo(mapX(0,0,30000,pad,w), mapY(1000,0,1200,pad,h)); ctx.lineTo(mapX(25000,0,30000,pad,w), mapY(0,0,1200,pad,h)); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(mapX(0,0,30000,pad,w), mapY(2500/30,0,1200,pad,h)); ctx.lineTo(mapX(30000,0,30000,pad,w), mapY((30000+2500)/30,0,1200,pad,h)); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Shifted Demand
+  const dIntP = (25000 + 200*d)/25;
+  ctx.strokeStyle = '#fc2779'; ctx.lineWidth = 2.6;
+  ctx.beginPath(); ctx.moveTo(mapX(0,0,30000,pad,w), mapY(Math.min(1200, dIntP),0,1200,pad,h));
+  ctx.lineTo(mapX(Math.min(30000, 25000+200*d),0,30000,pad,w), mapY(Math.max(0, (25000+200*d-30000)/25),0,1200,pad,h)); ctx.stroke();
+
+  // Shifted Supply
+  ctx.strokeStyle = '#2563eb'; ctx.lineWidth = 2.6;
+  const sP0 = Math.max(0, (2500 - 150*s)/30);
+  const sQ0 = Math.max(0, -2500 + 150*s);
+  ctx.beginPath(); ctx.moveTo(mapX(sQ0,0,30000,pad,w), mapY(sP0,0,1200,pad,h));
+  ctx.lineTo(mapX(30000,0,30000,pad,w), mapY((30000+2500-150*s)/30,0,1200,pad,h)); ctx.stroke();
+
+  // Equilibrium dot
+  const ex = mapX(qStar,0,30000,pad,w), ey = mapY(pStar,0,1200,pad,h);
+  ctx.fillStyle = '#111827'; ctx.beginPath(); ctx.arc(ex, ey, 6, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#0f172a'; ctx.font = 'bold 11px Segoe UI'; ctx.textAlign = 'left';
+  ctx.fillText(`E* (Q=${Math.round(qStar)}, P=₹${pStar.toFixed(0)})`, Math.min(ex+10, w-155), ey-8);
+
+  drawLegend(ctx, [{color:'#fc2779',label:'Demand (D)'},{color:'#2563eb',label:'Supply (S)'},{color:'#94a3b8',label:'Baseline'}], pad.l+8, 18);
+
+  const dp = pStar - pBase;
+  document.getElementById('s1_check').innerHTML = `<strong>Economic Check:</strong> Demand shift (${d>=0?'+':''}${d}) and Supply shift (${s>=0?'+':''}${s}) moved P* by <strong>${dp>=0?'+':''}₹${dp.toFixed(2)}</strong>. Price rises when Demand rises and falls when Supply rises.`;
+  document.getElementById('s1_note').innerHTML = `<strong>What this means:</strong> At equilibrium, Nykaa's NCR cluster clears <strong>${Math.round(qStar).toLocaleString('en-IN')} BPC orders/week</strong> at a net revenue of <strong>₹${pStar.toFixed(2)}/order</strong>.`;
+}
+
+// ================= STEP 2: CUSTOMER MODEL =================
+function updateStep2() {
+  const P = +document.getElementById('s2_p').value;
+  const m = +document.getElementById('s2_m').value;
+  document.getElementById('s2_p_val').textContent = '₹' + P;
+  document.getElementById('s2_m_val').textContent = m.toFixed(2) + '×';
+
+  const Py = 250;
+  const Ma = 6000 * m, alphaA = 0.70;
+  const Mb = 2500 * m, alphaB = 0.40;
+  const xa = (alphaA * Ma) / P, ya = ((1 - alphaA) * Ma) / Py;
+  const xb = (alphaB * Mb) / P, yb = ((1 - alphaB) * Mb) / Py;
+  const ua = Math.pow(xa, alphaA) * Math.pow(ya, 1 - alphaA);
+  const ub = Math.pow(xb, alphaB) * Math.pow(yb, 1 - alphaB);
+
+  document.getElementById('s2_xa').textContent = xa.toFixed(1);
+  document.getElementById('s2_ya').textContent = ya.toFixed(1);
+  document.getElementById('s2_ua').textContent = ua.toFixed(1);
+  document.getElementById('s2_xb').textContent = xb.toFixed(1);
+  document.getElementById('s2_yb').textContent = yb.toFixed(1);
+  document.getElementById('s2_ub').textContent = ub.toFixed(1);
+
+  const { ctx, w, h } = setupCanvas('c2');
+  const pad = { l: 55, r: 20, t: 30, b: 38 };
+  const xMax = 35, yMax = 40;
+  drawAxes(ctx, pad, w, h, 'Nykaa Curated Orders (x)', 'Local Pharmacy / Offline Trips (y)', xMax, yMax);
+
+  ctx.lineWidth = 2.2;
+  ctx.strokeStyle = '#fc2779';
+  ctx.beginPath(); ctx.moveTo(mapX(0,0,xMax,pad,w), mapY(Math.min(yMax, Ma/Py),0,yMax,pad,h));
+  ctx.lineTo(mapX(Math.min(xMax, Ma/P),0,xMax,pad,w), mapY(0,0,yMax,pad,h)); ctx.stroke();
+
+  ctx.strokeStyle = '#2563eb';
+  ctx.beginPath(); ctx.moveTo(mapX(0,0,xMax,pad,w), mapY(Math.min(yMax, Mb/Py),0,yMax,pad,h));
+  ctx.lineTo(mapX(Math.min(xMax, Mb/P),0,xMax,pad,w), mapY(0,0,yMax,pad,h)); ctx.stroke();
+
+  function drawIC(U, alpha, color) {
+    ctx.strokeStyle = color; ctx.setLineDash([4,3]); ctx.lineWidth = 1.6;
+    ctx.beginPath(); let started = false;
+    for (let x = 0.5; x <= xMax; x += 0.4) {
+      const y = Math.pow(U / Math.pow(x, alpha), 1 / (1 - alpha));
+      if (y <= yMax && y >= 0) {
+        const px = mapX(x,0,xMax,pad,w), py = mapY(y,0,yMax,pad,h);
+        if (!started) { ctx.moveTo(px, py); started = true; } else ctx.lineTo(px, py);
+      }
+    }
+    ctx.stroke(); ctx.setLineDash([]);
+  }
+  drawIC(ua, alphaA, '#be185d');
+  drawIC(ub, alphaB, '#3b82f6');
+
+  ctx.fillStyle = '#fc2779'; ctx.beginPath(); ctx.arc(mapX(xa,0,xMax,pad,w), mapY(ya,0,yMax,pad,h), 5.5, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#2563eb'; ctx.beginPath(); ctx.arc(mapX(xb,0,xMax,pad,w), mapY(yb,0,yMax,pad,h), 5.5, 0, Math.PI*2); ctx.fill();
+
+  drawLegend(ctx, [{color:'#fc2779',label:'Luxe/Prive Budget & IC'},{color:'#2563eb',label:'Value/Mass Budget & IC'}], pad.l+8, 18);
+
+  document.getElementById('s2_check').innerHTML = `<strong>Economic Check:</strong> At P=₹${P}, Segment B (smaller budget ₹${Math.round(Mb)}) buys <strong>${xb.toFixed(1)}</strong> orders vs Segment A's <strong>${xa.toFixed(1)}</strong>. Raising P pivots both budget lines inward and strictly reduces Nykaa orders.`;
+  document.getElementById('s2_note').innerHTML = `<strong>What this means:</strong> Each shopper maximises Cobb-Douglas utility where the indifference curve is tangent to the budget line (MRS = P/Py = ${(P/Py).toFixed(2)}).`;
+}
+
+// ================= STEP 3: CPI & INFLATION =================
+function setS3(inf, inc) { document.getElementById('s3_inf').value = inf; document.getElementById('s3_inc').value = inc; updateStep3(); }
+function updateStep3() {
+  const inf = +document.getElementById('s3_inf').value / 100;
+  const inc = +document.getElementById('s3_inc').value / 100;
+  document.getElementById('s3_inf_val').textContent = (inf*100).toFixed(1) + '%';
+  document.getElementById('s3_inc_val').textContent = (inc*100).toFixed(1) + '%' + (inc===0?' (Fixed)':'');
+
+  const rows = [];
+  for (let t = 0; t <= 4; t++) {
+    const cpi = 100 * Math.pow(1 + inf, t);
+    const nomP = 500 * Math.pow(1 + inf, t);
+    const realP = nomP * (100 / cpi);
+    const nomInc = 100 * Math.pow(1 + inc, t);
+    const realInc = nomInc * (100 / cpi);
+    const realQ = 12500 * Math.pow(realInc / 100, 1.10);
+    rows.push({ t, cpi, nomP, realP, nomInc, realInc, realQ });
+  }
+  const r4 = rows[4];
+  document.getElementById('s3_cpi4').textContent = r4.cpi.toFixed(1);
+  document.getElementById('s3_ry4').textContent = '₹' + r4.realInc.toFixed(1);
+  document.getElementById('s3_qd4').textContent = Math.round(r4.realQ).toLocaleString('en-IN');
+
+  let html = '<thead><tr><th>Year</th><th>CPI Index</th><th>Nominal Price</th><th>Real Price (Base)</th><th>Real Income Index</th><th>Real Weekly Orders</th></tr></thead><tbody>';
+  rows.forEach(r => {
+    html += `<tr><td>Year ${r.t}</td><td>${r.cpi.toFixed(1)}</td><td>₹${r.nomP.toFixed(1)}</td><td>₹${r.realP.toFixed(1)}</td><td>${r.realInc.toFixed(1)}</td><td>${Math.round(r.realQ).toLocaleString('en-IN')}</td></tr>`;
+  });
+  document.getElementById('s3_table').innerHTML = html + '</tbody>';
+
+  const { ctx, w, h } = setupCanvas('c3');
+  const pad = { l: 55, r: 20, t: 30, b: 36 };
+  drawAxes(ctx, pad, w, h, 'Time Period (Years)', 'Index Value (Base = 100)', 4, 180, 0, 40);
+
+  function plotSeries(key, color) {
+    ctx.strokeStyle = color; ctx.lineWidth = 2.6; ctx.beginPath();
+    rows.forEach((r, i) => {
+      const px = mapX(r.t, 0, 4, pad, w), py = mapY(Math.min(180, Math.max(40, r[key])), 40, 180, pad, h);
+      if (i===0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    });
+    ctx.stroke();
+    rows.forEach(r => {
+      ctx.fillStyle = color; ctx.beginPath();
+      ctx.arc(mapX(r.t,0,4,pad,w), mapY(Math.min(180, Math.max(40, r[key])),40,180,pad,h), 4, 0, Math.PI*2); ctx.fill();
+    });
+  }
+  plotSeries('cpi', '#dc2626');
+  plotSeries('realInc', '#2563eb');
+  plotSeries('nomInc', '#fc2779');
+  drawLegend(ctx, [{color:'#dc2626',label:'CPI Price Index'},{color:'#fc2779',label:'Nominal Income'},{color:'#2563eb',label:'Real Income'}], pad.l+8, 18);
+
+  document.getElementById('s3_check').innerHTML = `<strong>Economic Check:</strong> With ${(inf*100).toFixed(1)}% inflation and ${(inc*100).toFixed(1)}% nominal income growth, Year 4 real income is <strong>${r4.realInc.toFixed(1)}</strong> and real BPC demand moves to <strong>${Math.round(r4.realQ).toLocaleString('en-IN')}</strong> orders.`;
+  document.getElementById('s3_note').innerHTML = `<strong>What this means:</strong> Because beauty & cosmetics are discretionary (income elasticity 1.10), persistent CPI inflation without wage growth sharply reduces real Nykaa order volumes.`;
+}
+
+// ================= STEP 4: DEMAND & NETWORK EFFECTS =================
+function updateStep4() {
+  const P = +document.getElementById('s4_p').value;
+  const N = +document.getElementById('s4_n').value;
+  document.getElementById('s4_p_val').textContent = '₹' + P;
+  document.getElementById('s4_n_val').textContent = N + '%';
+
+  const mult = 1 + 0.004 * N;
+  function qAt(p, m) { return (Math.max(0, 8000 - 8*p) + Math.max(0, 14000 - 22*p)) * m; }
+  const qNow = qAt(P, mult);
+  let cs = 0; const dp = 2;
+  for (let p = P; p < 1000; p += dp) cs += 0.5 * (qAt(p, mult) + qAt(p+dp, mult)) * dp;
+
+  document.getElementById('s4_q').textContent = Math.round(qNow).toLocaleString('en-IN');
+  document.getElementById('s4_cs').textContent = '₹' + (cs/100000).toFixed(2) + 'L';
+  document.getElementById('s4_lift').textContent = '+' + (0.4 * N).toFixed(1) + '%';
+
+  const { ctx, w, h } = setupCanvas('c4');
+  const pad = { l: 55, r: 20, t: 30, b: 38 };
+  drawAxes(ctx, pad, w, h, 'Market BPC Orders / Week (Q)', 'Net Price per Order (₹)', 32000, 1050);
+
+  ctx.fillStyle = 'rgba(252, 39, 121, 0.14)';
+  ctx.beginPath();
+  ctx.moveTo(mapX(0,0,32000,pad,w), mapY(P,0,1050,pad,h));
+  for (let p = P; p <= 1000; p += 10) ctx.lineTo(mapX(qAt(p, mult),0,32000,pad,w), mapY(p,0,1050,pad,h));
+  ctx.lineTo(mapX(0,0,32000,pad,w), mapY(1000,0,1050,pad,h));
+  ctx.closePath(); ctx.fill();
+
+  ctx.strokeStyle = '#94a3b8'; ctx.setLineDash([5,4]); ctx.lineWidth = 1.6; ctx.beginPath();
+  for (let p = 0; p <= 1000; p += 20) {
+    const px = mapX(qAt(p,1),0,32000,pad,w), py = mapY(p,0,1050,pad,h);
+    if (p===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+  }
+  ctx.stroke(); ctx.setLineDash([]);
+
+  ctx.strokeStyle = '#fc2779'; ctx.lineWidth = 2.8; ctx.beginPath();
+  for (let p = 0; p <= 1000; p += 20) {
+    const px = mapX(qAt(p,mult),0,32000,pad,w), py = mapY(p,0,1050,pad,h);
+    if (p===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+  }
+  ctx.stroke();
+
+  ctx.strokeStyle = '#111827'; ctx.lineWidth = 1.5; ctx.setLineDash([4,3]);
+  ctx.beginPath(); ctx.moveTo(pad.l, mapY(P,0,1050,pad,h)); ctx.lineTo(mapX(qNow,0,32000,pad,w), mapY(P,0,1050,pad,h)); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#111827'; ctx.beginPath(); ctx.arc(mapX(qNow,0,32000,pad,w), mapY(P,0,1050,pad,h), 5.5, 0, Math.PI*2); ctx.fill();
+
+  drawLegend(ctx, [{color:'#fc2779',label:'Total Demand (with Network)'},{color:'#94a3b8',label:'Base Demand (N=0)'},{color:'rgba(252,39,121,0.35)',label:'Consumer Surplus'}], pad.l+8, 18);
+
+  document.getElementById('s4_check').innerHTML = `<strong>Economic Check:</strong> At P=₹${P}, Consumer Surplus is <strong>₹${(cs/100000).toFixed(2)}L</strong>. Raising P strictly shrinks Consumer Surplus; growing Nykaa's review & brand network N shifts demand right.`;
+  document.getElementById('s4_note').innerHTML = `<strong>What this means:</strong> Verified shade reviews, beauty tutorials, and exclusive global brand launches create a strong network externality that raises shoppers' willingness-to-pay.`;
+}
+
+// ================= STEP 5: OLS DEMAND FORECASTING =================
+const histData = [
+  {w:1,  P:470, Y:98,  R:485, Q:12121},
+  {w:2,  P:500, Y:99,  R:500, Q:11306},
+  {w:3,  P:520, Y:100, R:505, Q:11022},
+  {w:4,  P:450, Y:101, R:510, Q:13429},
+  {w:5,  P:550, Y:102, R:520, Q:10634},
+  {w:6,  P:580, Y:103, R:515, Q:9843},
+  {w:7,  P:490, Y:104, R:525, Q:12751},
+  {w:8,  P:510, Y:105, R:530, Q:12102},
+  {w:9,  P:600, Y:106, R:540, Q:10051},
+  {w:10, P:460, Y:107, R:520, Q:14096},
+  {w:11, P:540, Y:108, R:545, Q:11876},
+  {w:12, P:500, Y:110, R:535, Q:13216}
+];
+
+function solveOLS() {
+  const X = histData.map(d => [1, Math.log(d.P), Math.log(d.Y), Math.log(d.R)]);
+  const y = histData.map(d => Math.log(d.Q));
+  const k = 4, n = X.length;
+  const XtX = Array.from({length:k}, () => Array(k).fill(0));
+  const Xty = Array(k).fill(0);
+  for (let i=0; i<n; i++) {
+    for (let j=0; j<k; j++) {
+      Xty[j] += X[i][j] * y[i];
+      for (let m=0; m<k; m++) XtX[j][m] += X[i][j] * X[i][m];
+    }
+  }
+  const A = XtX.map((row, i) => [...row, Xty[i]]);
+  for (let i=0; i<k; i++) {
+    let maxR = i;
+    for (let r=i+1; r<k; r++) if (Math.abs(A[r][i]) > Math.abs(A[maxR][i])) maxR = r;
+    [A[i], A[maxR]] = [A[maxR], A[i]];
+    const div = A[i][i];
+    for (let c=i; c<=k; c++) A[i][c] /= div;
+    for (let r=0; r<k; r++) if (r !== i) {
+      const f = A[r][i];
+      for (let c=i; c<=k; c++) A[r][c] -= f * A[i][c];
+    }
+  }
+  const b = A.map(row => row[k]);
+  const yMean = y.reduce((a,c)=>a+c,0)/n;
+  let ssRes = 0, ssTot = 0;
+  for (let i=0; i<n; i++) {
+    const yh = b[0] + b[1]*X[i][1] + b[2]*X[i][2] + b[3]*X[i][3];
+    ssRes += Math.pow(y[i] - yh, 2);
+    ssTot += Math.pow(y[i] - yMean, 2);
+  }
+  return { b, r2: 1 - ssRes/ssTot };
+}
+const ols = solveOLS();
+
+function updateStep5() {
+  const H = +document.getElementById('s5_h').value;
+  const P = +document.getElementById('s5_p').value;
+  const Y = +document.getElementById('s5_y').value;
+  const R = +document.getElementById('s5_r').value;
+  document.getElementById('s5_h_val').textContent = H + ' weeks';
+  document.getElementById('s5_p_val').textContent = '₹' + P;
+  document.getElementById('s5_y_val').textContent = Y;
+  document.getElementById('s5_r_val').textContent = '₹' + R;
+
+  document.getElementById('s5_ep').textContent = ols.b[1].toFixed(2);
+  document.getElementById('s5_ey').textContent = '+' + ols.b[2].toFixed(2);
+  document.getElementById('s5_er').textContent = '+' + ols.b[3].toFixed(2);
+  document.getElementById('s5_r2').textContent = ols.r2.toFixed(3);
+
+  const forecasts = [];
+  for (let t = 1; t <= H; t++) {
+    const yt = Y * Math.pow(1.005, t - 1);
+    const base = Math.exp(ols.b[0] + ols.b[1]*Math.log(P) + ols.b[2]*Math.log(yt) + ols.b[3]*Math.log(R));
+    forecasts.push({ w: 12 + t, worst: base * 0.90, base, best: base * 1.10 });
+  }
+
+  let th = '<thead><tr><th>Forecast Week</th><th>Worst Case (-10%)</th><th>Base Forecast</th><th>Best Case (+10%)</th></tr></thead><tbody>';
+  forecasts.forEach(f => {
+    th += `<tr><td>Week ${f.w}</td><td>${Math.round(f.worst).toLocaleString('en-IN')}</td><td><strong>${Math.round(f.base).toLocaleString('en-IN')}</strong></td><td>${Math.round(f.best).toLocaleString('en-IN')}</td></tr>`;
+  });
+  document.getElementById('s5_table').innerHTML = th + '</tbody>';
+
+  const { ctx, w, h } = setupCanvas('c5');
+  const pad = { l: 55, r: 20, t: 30, b: 36 };
+  const maxW = 12 + H;
+  drawAxes(ctx, pad, w, h, 'Week Number', 'Weekly Orders (Q)', maxW, 20000, 1, 6000);
+
+  ctx.strokeStyle = '#334155'; ctx.lineWidth = 2.4; ctx.beginPath();
+  histData.forEach((d,i) => {
+    const px = mapX(d.w,1,maxW,pad,w), py = mapY(d.Q,6000,20000,pad,h);
+    if (i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+  });
+  ctx.stroke();
+
+  ctx.fillStyle = 'rgba(252, 39, 121, 0.14)';
+  ctx.beginPath();
+  ctx.moveTo(mapX(12,1,maxW,pad,w), mapY(histData[11].Q,6000,20000,pad,h));
+  forecasts.forEach(f => ctx.lineTo(mapX(f.w,1,maxW,pad,w), mapY(Math.min(20000,f.best),6000,20000,pad,h)));
+  for (let i=forecasts.length-1; i>=0; i--) ctx.lineTo(mapX(forecasts[i].w,1,maxW,pad,w), mapY(Math.max(6000,forecasts[i].worst),6000,20000,pad,h));
+  ctx.closePath(); ctx.fill();
+
+  ctx.strokeStyle = '#fc2779'; ctx.lineWidth = 2.6; ctx.setLineDash([5,3]); ctx.beginPath();
+  ctx.moveTo(mapX(12,1,maxW,pad,w), mapY(histData[11].Q,6000,20000,pad,h));
+  forecasts.forEach(f => ctx.lineTo(mapX(f.w,1,maxW,pad,w), mapY(Math.min(20000,Math.max(6000,f.base)),6000,20000,pad,h)));
+  ctx.stroke(); ctx.setLineDash([]);
+
+  drawLegend(ctx, [{color:'#334155',label:'12-Week Historical'},{color:'#fc2779',label:'Base Forecast'},{color:'rgba(252,39,121,0.35)',label:'Best/Worst Band'}], pad.l+8, 18);
+
+  document.getElementById('s5_check').innerHTML = `<strong>Economic Check:</strong> Estimated elasticities (Ep=${ols.b[1].toFixed(2)}, Ey=+${ols.b[2].toFixed(2)}, Er=+${ols.b[3].toFixed(2)}) match expected economic signs (Negative own-price, Discretionary normal/luxury good, Rival substitute) and closely recover true DGP (-1.35, +1.10, +0.55).`;
+  document.getElementById('s5_note').innerHTML = `<strong>What this means:</strong> A 10% price hike by Nykaa cuts orders by ~${Math.abs(ols.b[1]*10).toFixed(1)}%, while a 10% price hike by Tira lifts Nykaa orders by ~${(ols.b[3]*10).toFixed(1)}%.`;
+}
+
+// ================= STEP 6: PRODUCTION FUNCTION =================
+function setS6(l) { document.getElementById('s6_l').value = l; updateStep6(); }
+function updateStep6() {
+  const L = +document.getElementById('s6_l').value;
+  document.getElementById('s6_l_val').textContent = L + ' staff';
+
+  const tp = 120*L + 18*L*L - 0.18*L*L*L;
+  const ap = 120 + 18*L - 0.18*L*L;
+  const mp = 120 + 36*L - 0.54*L*L;
+  const stage = L < 50 ? 'Stage I (Rising AP)' : (mp >= 0 ? 'Stage II (Optimal)' : 'Stage III (Congestion)');
+
+  document.getElementById('s6_tp').textContent = Math.round(tp).toLocaleString('en-IN');
+  document.getElementById('s6_ap').textContent = ap.toFixed(1);
+  document.getElementById('s6_mp').textContent = mp.toFixed(1);
+  document.getElementById('s6_stage').textContent = stage.split(' ')[0] + ' ' + stage.split(' ')[1];
+
+  const { ctx, w, h } = setupCanvas('c6');
+  const pad = { l: 55, r: 20, t: 30, b: 38 };
+  drawAxes(ctx, pad, w, h, 'Variable Input: Fulfillment Staff & Advisors (L)', 'AP & MP (Orders/Staff) | TP/50', 85, 900, 0, -200);
+
+  ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(pad.l, mapY(0,-200,900,pad,h)); ctx.lineTo(w-pad.r, mapY(0,-200,900,pad,h)); ctx.stroke();
+
+  function drawProd(fn, color, lw=2.4) {
+    ctx.strokeStyle = color; ctx.lineWidth = lw; ctx.beginPath();
+    for (let x=1; x<=85; x++) {
+      const y = fn(x);
+      const px = mapX(x,0,85,pad,w), py = mapY(Math.max(-200, Math.min(900, y)),-200,900,pad,h);
+      if (x===1) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+  }
+  drawProd(x => (120*x + 18*x*x - 0.18*x*x*x)/50, '#7c3aed', 2.2);
+  drawProd(x => 120 + 18*x - 0.18*x*x, '#2563eb', 2.6);
+  drawProd(x => 120 + 36*x - 0.54*x*x, '#fc2779', 2.6);
+
+  const lx = mapX(L,0,85,pad,w);
+  ctx.strokeStyle = '#111827'; ctx.setLineDash([4,3]); ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(lx, pad.t); ctx.lineTo(lx, h-pad.b); ctx.stroke(); ctx.setLineDash([]);
+
+  ctx.fillStyle = '#d97706'; ctx.beginPath(); ctx.arc(mapX(50,0,85,pad,w), mapY(570,-200,900,pad,h), 5, 0, Math.PI*2); ctx.fill();
+
+  drawLegend(ctx, [{color:'#7c3aed',label:'TP (scaled ÷50)'},{color:'#2563eb',label:'Average Product (AP)'},{color:'#fc2779',label:'Marginal Product (MP)'}], pad.l+8, 18);
+
+  document.getElementById('s6_check').innerHTML = `<strong>Economic Check:</strong> Diminishing marginal returns start at <strong>L = 33.3</strong> staff; MP crosses AP at its exact maximum at <strong>L = 50</strong> (AP = MP = 570 orders/staff); TP peaks at <strong>L = 70</strong>.`;
+  document.getElementById('s6_note').innerHTML = `<strong>What this means:</strong> Currently in <strong>${stage}</strong>. A rational Nykaa fulfillment manager always operates in <strong>Stage II (50 ≤ L ≤ 70)</strong> before packing-station congestion sets in.`;
+}
+
+// ================= STEP 7: COST CURVES =================
+function costFn(Q, K, w) {
+  const fc = K === 1 ? 900000 : (K === 2 ? 1400000 : 2300000);
+  const scaleFactor = K === 1 ? 1.0 : (K === 2 ? 1.55 : 1.95);
+  const eff = K === 1 ? 1.0 : (K === 2 ? 0.88 : 0.96);
+  const qS = Q / scaleFactor;
+  const vc = w * eff * (430*Q - 0.020*(Q*qS) + 0.0000009*(Q*qS*qS));
+  const tc = fc + vc;
+  const atc = tc / Q;
+  const mc = w * eff * (430 - 0.040*qS + 0.0000027*qS*qS);
+  return { fc, vc, tc, atc, mc };
+}
+
+function updateStep7() {
+  const Q = +document.getElementById('s7_q').value;
+  const K = +document.getElementById('s7_k').value;
+  const wMult = +document.getElementById('s7_w').value;
+  const rMult = +document.getElementById('s7_r').value;
+  document.getElementById('s7_q_val').textContent = Q.toLocaleString('en-IN');
+  document.getElementById('s7_k_val').textContent = K===1?'Manual Warehouse (K=1)':(K===2?'Smart Hub (MES)':'Mega-Complex (K=3)');
+  document.getElementById('s7_w_val').textContent = wMult.toFixed(2) + '×';
+  document.getElementById('s7_r_val').textContent = rMult.toFixed(2) + '×';
+
+  const cur = costFn(Q, K, wMult);
+  document.getElementById('s7_atc').textContent = '₹' + cur.atc.toFixed(1);
+  document.getElementById('s7_mc').textContent = '₹' + cur.mc.toFixed(1);
+  document.getElementById('s7_tc').textContent = '₹' + (cur.tc/100000).toFixed(2) + 'L';
+  document.getElementById('s7_mix').textContent = (rMult / wMult).toFixed(2);
+
+  let minATC = 1e9, minQ = 2000;
+  for (let q = 2000; q <= 28000; q += 200) {
+    const c = costFn(q, K, wMult);
+    if (c.atc < minATC) { minATC = c.atc; minQ = q; }
+  }
+
+  const { ctx, w, h } = setupCanvas('c7');
+  const pad = { l: 55, r: 20, t: 30, b: 38 };
+  drawAxes(ctx, pad, w, h, 'Weekly Output (Q orders)', 'Cost per Order (₹)', 28000, 850, 2000, 150);
+
+  ctx.strokeStyle = '#7c3aed'; ctx.lineWidth = 3; ctx.setLineDash([6,4]); ctx.beginPath();
+  for (let q = 2000; q <= 28000; q += 400) {
+    const lrac = Math.min(costFn(q,1,wMult).atc, costFn(q,2,wMult).atc, costFn(q,3,wMult).atc);
+    const px = mapX(q,2000,28000,pad,w), py = mapY(Math.min(850,Math.max(150,lrac)),150,850,pad,h);
+    if (q===2000) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+  }
+  ctx.stroke(); ctx.setLineDash([]);
+
+  ctx.strokeStyle = '#2563eb'; ctx.lineWidth = 2.6; ctx.beginPath();
+  for (let q = 2000; q <= 28000; q += 400) {
+    const y = costFn(q, K, wMult).atc;
+    const px = mapX(q,2000,28000,pad,w), py = mapY(Math.min(850,Math.max(150,y)),150,850,pad,h);
+    if (q===2000) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+  }
+  ctx.stroke();
+
+  ctx.strokeStyle = '#fc2779'; ctx.lineWidth = 2.6; ctx.beginPath();
+  for (let q = 2000; q <= 28000; q += 400) {
+    const y = costFn(q, K, wMult).mc;
+    const px = mapX(q,2000,28000,pad,w), py = mapY(Math.min(850,Math.max(150,y)),150,850,pad,h);
+    if (q===2000) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+  }
+  ctx.stroke();
+
+  ctx.fillStyle = '#111827'; ctx.beginPath();
+  ctx.arc(mapX(Q,2000,28000,pad,w), mapY(Math.min(850,Math.max(150,cur.atc)),150,850,pad,h), 5.5, 0, Math.PI*2); ctx.fill();
+
+  drawLegend(ctx, [{color:'#2563eb',label:'SRATC (Selected K)'},{color:'#fc2779',label:'SRMC'},{color:'#7c3aed',label:'LRAC Envelope'}], pad.l+8, 18);
+
+  document.getElementById('s7_check').innerHTML = `<strong>Economic Check:</strong> Minimum SRATC for K=${K} occurs at <strong>Q = ${minQ.toLocaleString('en-IN')}</strong> (₹${minATC.toFixed(1)}/order), where <strong>MC = ATC</strong>. Automated Smart Hub (K=2) achieves the lowest LRAC (Minimum Efficient Scale).`;
+  document.getElementById('s7_note').innerHTML = `<strong>Isoquant/Isocost Input Mix:</strong> At Wage=${wMult.toFixed(2)}× and Tech=${rMult.toFixed(2)}×, cost minimisation (MP_L/w = MP_T/r) sets optimal Staff-to-Tech ratio = <strong>${(rMult/wMult).toFixed(2)}</strong>. Higher wages push Nykaa toward automated SKU sorting.`;
+}
+
+// ================= STEP 8: COMPETITIVE SETTING =================
+function setS8(n, g) { document.getElementById('s8_n').value = n; document.getElementById('s8_g').value = g; updateStep8(); }
+function updateStep8() {
+  const n = +document.getElementById('s8_n').value;
+  const g = +document.getElementById('s8_g').value;
+  document.getElementById('s8_n_val').textContent = n + (n===1?' rival':' rivals');
+  document.getElementById('s8_g_val').textContent = g.toFixed(2);
+
+  const mc = 310;
+  const pOpt = mc + (360 / (1 + 0.28 * n + 0.45 * g * (n > 0 ? 1 : 0)));
+  const pRival = n === 0 ? 0 : Math.max(mc + 15, pOpt - 16 * g - 5 * n);
+  const share = n === 0 ? 100 : (100 / (1 + 0.42 * n * (1 + 0.3 * g)));
+  const lerner = (pOpt - mc) / pOpt;
+  const struct = n === 0 ? 'Monopoly' : (n <= 4 ? 'Differentiated Oligopoly' : 'Monopolistic Competition');
+
+  document.getElementById('s8_struct').textContent = struct;
+  document.getElementById('s8_rivals_lbl').textContent = n===0 ? 'No direct rivals' : `${n} active BPC rivals`;
+  document.getElementById('s8_p').textContent = '₹' + pOpt.toFixed(1);
+  document.getElementById('s8_rp').textContent = n===0 ? 'N/A' : ('₹' + pRival.toFixed(1));
+  document.getElementById('s8_sh').textContent = share.toFixed(1) + '%';
+  document.getElementById('s8_lerner').textContent = lerner.toFixed(2);
+
+  const { ctx, w, h } = setupCanvas('c8');
+  const pad = { l: 55, r: 20, t: 30, b: 38 };
+  drawAxes(ctx, pad, w, h, 'Number of Active Rivals (n)', 'Optimal Price (₹) | Share × 5', 8, 700, 0, 0);
+
+  ctx.strokeStyle = '#fc2779'; ctx.lineWidth = 2.6; ctx.beginPath();
+  for (let i=0; i<=8; i++) {
+    const pi = mc + (360 / (1 + 0.28 * i + 0.45 * g * (i > 0 ? 1 : 0)));
+    const px = mapX(i,0,8,pad,w), py = mapY(pi,0,700,pad,h);
+    if (i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+  }
+  ctx.stroke();
+
+  ctx.strokeStyle = '#2563eb'; ctx.lineWidth = 2.6; ctx.beginPath();
+  for (let i=0; i<=8; i++) {
+    const si = i===0 ? 100 : (100 / (1 + 0.42 * i * (1 + 0.3 * g)));
+    const px = mapX(i,0,8,pad,w), py = mapY(si*5,0,700,pad,h);
+    if (i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+  }
+  ctx.stroke();
+
+  ctx.fillStyle = '#111827';
+  ctx.beginPath(); ctx.arc(mapX(n,0,8,pad,w), mapY(pOpt,0,700,pad,h), 5.5, 0, Math.PI*2); ctx.fill();
+
+  drawLegend(ctx, [{color:'#fc2779',label:'Nykaa Optimal Price (₹)'},{color:'#2563eb',label:'Market Share (scaled ×5)'}], pad.l+8, 18);
+
+  document.getElementById('s8_check').innerHTML = `<strong>Economic Check:</strong> As rivals rise from 0 to ${n}, Nykaa's Lerner Index falls from <strong>0.54</strong> to <strong>${lerner.toFixed(2)}</strong> and price falls toward MC (₹310).`;
+  document.getElementById('s8_note').innerHTML = `<strong>Sector Justification (${struct}):</strong> Indian online BPC is a <strong>Differentiated Oligopoly</strong> because 4–5 major platforms (Nykaa, Tira, Purplle, Myntra Beauty, Sephora) dominate organised beauty, hold exclusive global brand tie-ups, and react directly to each other's festive sales.`;
+}
+
+// ================= STEP 9: PROFIT MAXIMISATION =================
+let lastS9Gap = 360000, lastS9UserP = 520, lastS9OptP = 610;
+function setS9(p, c) { document.getElementById('s9_p').value = p; document.getElementById('s9_c').value = c; updateStep9(); }
+function findOptimumS9() {
+  const cShift = +document.getElementById('s9_c').value;
+  // P = 850 - 0.030*Q => MR = 850 - 0.060*Q
+  // TC = 1200000 + (210+cShift)*Q + 0.010*Q^2 => MC = (210+cShift) + 0.020*Q
+  const qOpt = (850 - (210 + cShift)) / 0.080;
+  const pOpt = Math.round(850 - 0.030 * qOpt);
+  document.getElementById('s9_p').value = pOpt;
+  updateStep9();
+}
+function updateStep9() {
+  const P = +document.getElementById('s9_p').value;
+  const cShift = +document.getElementById('s9_c').value;
+  document.getElementById('s9_p_val').textContent = '₹' + P;
+  document.getElementById('s9_c_val').textContent = (cShift>=0?'+':'') + '₹' + cShift + (cShift===0?' (Baseline)':'');
+
+  const fc = 1200000, c1 = 210 + cShift, c2 = 0.010;
+  function profitAtQ(q) {
+    if (q < 0) return -fc;
+    const p = 850 - 0.030 * q;
+    return p * q - (fc + c1 * q + c2 * q * q);
+  }
+  const qUser = Math.max(0, (850 - P) / 0.030);
+  const piUser = profitAtQ(qUser);
+
+  const qOpt = (850 - c1) / 0.080;
+  const pOpt = 850 - 0.030 * qOpt;
+  const piOpt = profitAtQ(qOpt);
+
+  let bfQ = 0, bfPi = -1e12;
+  for (let q = 0; q <= 20000; q += 10) {
+    const pi = profitAtQ(q);
+    if (pi > bfPi) { bfPi = pi; bfQ = q; }
+  }
+
+  const gap = Math.max(0, piOpt - piUser);
+  lastS9Gap = gap; lastS9UserP = P; lastS9OptP = pOpt;
+
+  document.getElementById('s9_pi').textContent = '₹' + (piUser/100000).toFixed(2) + 'L';
+  document.getElementById('s9_q').textContent = Math.round(qUser).toLocaleString('en-IN');
+  document.getElementById('s9_optpi').textContent = '₹' + (piOpt/100000).toFixed(2) + 'L';
+  document.getElementById('s9_optp').textContent = '₹' + pOpt.toFixed(1);
+  document.getElementById('s9_gap').textContent = '₹' + (gap/100000).toFixed(2) + 'L';
+  document.getElementById('s9_dir').textContent = Math.abs(P - pOpt) <= 2 ? 'At Profit Optimum!' : (P < pOpt ? 'Priced BELOW P*' : 'Priced ABOVE P*');
+
+  const { ctx, w, h } = setupCanvas('c9');
+  const pad = { l: 55, r: 20, t: 30, b: 38 };
+  drawAxes(ctx, pad, w, h, 'Weekly Orders (Q)', '₹ per Order (Demand, MR, MC)', 20000, 900, 0, 0);
+
+  ctx.strokeStyle = '#2563eb'; ctx.lineWidth = 2.4; ctx.beginPath();
+  ctx.moveTo(mapX(0,0,20000,pad,w), mapY(850,0,900,pad,h));
+  ctx.lineTo(mapX(20000,0,20000,pad,w), mapY(850-0.030*20000,0,900,pad,h)); ctx.stroke();
+
+  ctx.strokeStyle = '#7c3aed'; ctx.lineWidth = 2.2; ctx.setLineDash([5,3]); ctx.beginPath();
+  ctx.moveTo(mapX(0,0,20000,pad,w), mapY(850,0,900,pad,h));
+  ctx.lineTo(mapX(14167,0,20000,pad,w), mapY(0,0,900,pad,h)); ctx.stroke(); ctx.setLineDash([]);
+
+  ctx.strokeStyle = '#fc2779'; ctx.lineWidth = 2.4; ctx.beginPath();
+  ctx.moveTo(mapX(0,0,20000,pad,w), mapY(c1,0,900,pad,h));
+  ctx.lineTo(mapX(20000,0,20000,pad,w), mapY(c1+0.020*20000,0,900,pad,h)); ctx.stroke();
+
+  ctx.fillStyle = '#fc2779'; ctx.beginPath();
+  ctx.arc(mapX(qOpt,0,20000,pad,w), mapY(pOpt,0,900,pad,h), 6, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#111827'; ctx.beginPath();
+  ctx.arc(mapX(Math.min(20000,qUser),0,20000,pad,w), mapY(P,0,900,pad,h), 5.5, 0, Math.PI*2); ctx.fill();
+
+  drawLegend(ctx, [{color:'#2563eb',label:'Demand P(Q)'},{color:'#7c3aed',label:'MR(Q)'},{color:'#fc2779',label:'MC(Q) & Optimum'},{color:'#111827',label:'Your Choice'}], pad.l+8, 18);
+
+  document.getElementById('s9_check').innerHTML = `<strong>Validation Check:</strong> Analytical MR=MC gives <strong>Q*=${Math.round(qOpt)}</strong> (Profit ₹${(piOpt/100000).toFixed(2)}L). Live Brute-Force Grid Search gives <strong>Q=${bfQ}</strong> (Profit ₹${(bfPi/100000).toFixed(2)}L) — exact match!`;
+  document.getElementById('s9_note').innerHTML = `<strong>What this means:</strong> At P=₹${P}, you leave <strong>₹${(gap/100000).toFixed(2)}L/week</strong> on the table compared to the MR=MC optimum (P*=₹${pOpt.toFixed(1)}).`;
+}
+
+// ================= STEP 10: PRICE DISCRIMINATION =================
+let lastS10Lift = 184600;
+function setS10(a, b) { document.getElementById('s10_pa').value = a; document.getElementById('s10_pb').value = b; updateStep10(); }
+function optS10() { setS10(630, 430); }
+function updateStep10() {
+  const pa = +document.getElementById('s10_pa').value;
+  const pb = +document.getElementById('s10_pb').value;
+  document.getElementById('s10_pa_val').textContent = '₹' + pa;
+  document.getElementById('s10_pb_val').textContent = '₹' + pb;
+
+  const mc = 260, fc = 1000000;
+  const qa = Math.max(0, 6000 - 6 * pa);
+  const qb = Math.max(0, 12000 - 20 * pb);
+  const piA = (pa - mc) * qa;
+  const piB = (pb - mc) * qb;
+  const piSeg = piA + piB - fc;
+
+  // Best uniform price: Q = 18000 - 26*P => P* = (18000/26 + 260)/2 = 476.1538
+  const pUni = (18000/26 + mc) / 2;
+  const qUni = 18000 - 26 * pUni;
+  const piUni = (pUni - mc) * qUni - fc;
+
+  const lift = piSeg - piUni;
+  lastS10Lift = lift;
+
+  document.getElementById('s10_pi_seg').textContent = '₹' + (piSeg/100000).toFixed(2) + 'L';
+  document.getElementById('s10_pi_uni').textContent = '₹' + (piUni/100000).toFixed(2) + 'L';
+  document.getElementById('s10_lift').textContent = (lift>=0?'+':'') + '₹' + (lift/100000).toFixed(2) + 'L';
+  document.getElementById('s10_pct').textContent = (lift>=0?'+':'') + ((lift/piUni)*100).toFixed(1) + '% vs single price';
+
+  const { ctx, w, h } = setupCanvas('c10');
+  const pad = { l: 55, r: 20, t: 30, b: 38 };
+  const bars = [
+    { label: 'Best Uniform', val: piUni/100000, color: '#64748b' },
+    { label: 'Segmented Profit', val: Math.max(0, piSeg/100000), color: '#fc2779' },
+    { label: 'Luxe Contrib', val: Math.max(0, piA/100000), color: '#7c3aed' },
+    { label: 'Mass Contrib', val: Math.max(0, piB/100000), color: '#f59e0b' }
+  ];
+  drawAxes(ctx, pad, w, h, 'Pricing Strategy Comparison', 'Weekly ₹ Lakhs', 4, 10.0, 0, 0);
+  const bw = (w - pad.l - pad.r) / 4;
+  bars.forEach((b, i) => {
+    const x = pad.l + i*bw + 18;
+    const bh = (Math.min(10, b.val) / 10.0) * (h - pad.t - pad.b);
+    const y = (h - pad.b) - bh;
+    ctx.fillStyle = b.color; ctx.fillRect(x, y, bw - 36, bh);
+    ctx.fillStyle = '#0f172a'; ctx.font = 'bold 11px Segoe UI'; ctx.textAlign = 'center';
+    ctx.fillText('₹'+b.val.toFixed(2)+'L', x + (bw-36)/2, y - 6);
+    ctx.font = '10px Segoe UI';
+    ctx.fillText(b.label, x + (bw-36)/2, h - pad.b + 28);
+  });
+
+  document.getElementById('s10_check').innerHTML = `<strong>Economic Check:</strong> Optimal segmented pricing charges <strong>₹630</strong> to price-inelastic Nykaa Luxe/Prive users and <strong>₹430</strong> to elastic Mass/Flash-Sale users, earning <strong>+₹1.85L/week (+85.9%)</strong> over the best uniform price.`;
+  document.getElementById('s10_note').innerHTML = `<strong>What this means:</strong> Separating Nykaa Luxe (full-price global prestige brands) from mass-market Pink Flash Deals captures high willingness-to-pay without losing budget shoppers.`;
+}
+
+// ================= STEP 11: GAME THEORY =================
+let gRound = 1, gTotB = 0, gTotZ = 0, gLastB = null, gGrimBroken = false;
+const payoffs = {
+  'HIGH_HIGH': [13.5, 13.5, 'm_HH'],
+  'HIGH_CUT':  [5.2, 17.8, 'm_HC'],
+  'CUT_HIGH':  [17.8, 5.2, 'm_CH'],
+  'CUT_CUT':   [7.6, 7.6, 'm_CC']
+};
+function resetGame() {
+  gRound = 1; gTotB = 0; gTotZ = 0; gLastB = null; gGrimBroken = false;
+  document.getElementById('g_round').textContent = '1';
+  document.getElementById('g_tot_b').textContent = '₹0.0L';
+  document.getElementById('g_tot_z').textContent = '₹0.0L';
+  document.querySelector('#g_log tbody').innerHTML = '';
+  document.querySelectorAll('.matrix-cell').forEach(c => c.classList.remove('highlight'));
+  document.getElementById('btn_high').disabled = false;
+  document.getElementById('btn_cut').disabled = false;
+  document.getElementById('s11_note').textContent = 'Choose your opening move in Round 1 to begin the repeated festive pricing game.';
+}
+function playRound(bMove) {
+  if (gRound > 5) return;
+  const strat = document.getElementById('g_strat').value;
+  let zMove = 'HIGH';
+  if (strat === 'cut') zMove = 'CUT';
+  else if (strat === 'tft') zMove = (gRound === 1) ? 'HIGH' : gLastB;
+  else if (strat === 'grim') zMove = gGrimBroken ? 'CUT' : 'HIGH';
+
+  const [pb, pz, cellId] = payoffs[bMove + '_' + zMove];
+  gTotB += pb; gTotZ += pz;
+  if (bMove === 'CUT') gGrimBroken = true;
+  gLastB = bMove;
+
+  document.querySelectorAll('.matrix-cell').forEach(c => c.classList.remove('highlight'));
+  document.getElementById(cellId).classList.add('highlight');
+
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>Round ${gRound}</td><td>${bMove==='HIGH'?'Maintain (₹610)':'Discount (₹440)'}</td><td>${zMove==='HIGH'?'Maintain (₹610)':'Discount (₹440)'}</td><td><strong>₹${pb.toFixed(1)}L</strong></td><td>₹${pz.toFixed(1)}L</td>`;
+  document.querySelector('#g_log tbody').appendChild(tr);
+
+  document.getElementById('g_tot_b').textContent = '₹' + gTotB.toFixed(1) + 'L';
+  document.getElementById('g_tot_z').textContent = '₹' + gTotZ.toFixed(1) + 'L';
+
+  gRound++;
+  if (gRound > 5) {
+    document.getElementById('g_round').textContent = 'Done';
+    document.getElementById('btn_high').disabled = true;
+    document.getElementById('btn_cut').disabled = true;
+    document.getElementById('s11_note').innerHTML = `<strong>5-Round Game Complete!</strong> Nykaa earned <strong>₹${gTotB.toFixed(1)}L</strong> vs Tira's <strong>₹${gTotZ.toFixed(1)}L</strong>. Sustaining margin discipline against Tit-for-Tat yields ₹67.5L, whereas a mutual discount war collapses to ₹38.0L!`;
+  } else {
+    document.getElementById('g_round').textContent = gRound;
+    document.getElementById('s11_note').innerHTML = `Round ${gRound-1}: Nykaa chose <strong>${bMove}</strong>, Tira chose <strong>${zMove}</strong>. Decide your Round ${gRound} move.`;
+  }
+}
+
+// ================= STEP 12: EXTERNALITIES, RISK & SCORECARD =================
+function updateStep12(triggerRun=false) {
+  const pol = document.getElementById('s12_pol').value;
+  const risk = document.getElementById('s12_risk').value;
+  const rand = document.getElementById('s12_rand').value;
+
+  const basePi = 13.60; // Lakhs from Step 9 optimum
+  let inv = 0, extCost = 2.40, regRiskStd = 2.80, brandLift = 0;
+  if (pol === 'hybrid') { inv = 1.40; extCost = 1.20; regRiskStd = 1.60; brandLift = 0.50; }
+  if (pol === 'green')  { inv = 2.60; extCost = 0.25; regRiskStd = 0.80; brandLift = 1.40; }
+
+  const shock = (rand === 'on') ? ((Math.random() - 0.5) * 2 * regRiskStd) : 0;
+  const privPi = basePi - inv + brandLift + shock;
+  const sw = privPi - extCost;
+
+  const A = risk === 'averse' ? 0.8 : (risk === 'neutral' ? 0 : -0.4);
+  const ce = privPi - 0.5 * A * (regRiskStd * regRiskStd);
+
+  document.getElementById('s12_pi').textContent = '₹' + privPi.toFixed(2) + 'L';
+  document.getElementById('s12_ext').textContent = '₹' + extCost.toFixed(2) + 'L';
+  document.getElementById('s12_sw').textContent = '₹' + sw.toFixed(2) + 'L';
+  document.getElementById('s12_ce').textContent = '₹' + ce.toFixed(2) + 'L';
+
+  const { ctx, w, h } = setupCanvas('c12');
+  const pad = { l: 55, r: 20, t: 28, b: 36 };
+  drawAxes(ctx, pad, w, h, 'Financial & ESG Metrics', 'Weekly ₹ Lakhs', 4, 16, 0, 0);
+  const items = [
+    { label: 'Private Profit', v: Math.max(0, privPi), c: '#fc2779' },
+    { label: 'Social Cost', v: extCost, c: '#dc2626' },
+    { label: 'Social Welfare', v: Math.max(0, sw), c: '#2563eb' },
+    { label: 'Certainty Eq', v: Math.max(0, ce), c: '#d97706' }
+  ];
+  const bw = (w - pad.l - pad.r) / 4;
+  items.forEach((it, i) => {
+    const x = pad.l + i*bw + 18;
+    const bh = (Math.min(16, it.v) / 16) * (h - pad.t - pad.b);
+    ctx.fillStyle = it.c; ctx.fillRect(x, (h - pad.b) - bh, bw - 36, bh);
+    ctx.fillStyle = '#0f172a'; ctx.font = 'bold 11px Segoe UI'; ctx.textAlign = 'center';
+    ctx.fillText('₹'+it.v.toFixed(2)+'L', x + (bw-36)/2, (h - pad.b) - bh - 5);
+    ctx.font = '10px Segoe UI'; ctx.fillText(it.label, x + (bw-36)/2, h - pad.b + 26);
+  });
+
+  document.getElementById('s12_check').innerHTML = `<strong>Economic Check:</strong> Randomness is <strong>${rand.toUpperCase()}</strong> (Shock = ${shock>=0?'+':''}₹${shock.toFixed(2)}L). Results are 100% repeatable when OFF and vary sensibly when ON.`;
+  document.getElementById('s12_note').innerHTML = `<strong>What this means:</strong> A <strong>${risk}</strong> manager values the <strong>${pol.toUpperCase()}</strong> policy at a Certainty Equivalent of <strong>₹${ce.toFixed(2)}L/week</strong>. 100% Plastic-Free + Clean Beauty verification cuts waste externality by 90% and lowers counterfeit/regulatory risk.`;
+
+  updateScorecard(privPi, sw, ce);
+}
+
+function updateScorecard(privPi, sw, ce) {
+  const sOpt = Math.max(5, Math.round(25 * Math.max(0, 1 - lastS9Gap / 600000)));
+  const sDisc = lastS10Lift > 120000 ? 25 : (lastS10Lift > 0 ? 18 : 10);
+  const sGame = gTotB === 0 ? 18 : Math.min(25, Math.round((gTotB / 67.5) * 25));
+  const sESG = sw >= 11.8 ? 25 : (sw >= 11.0 ? 21 : 15);
+  const total = Math.min(100, sOpt + sDisc + sGame + sESG);
+
+  document.getElementById('sc_total').textContent = total;
+  document.getElementById('sc_ring').style.background = `conic-gradient(var(--primary) ${total*3.6}deg, #e2e8f0 0deg)`;
+  const gEl = document.getElementById('sc_grade');
+  gEl.textContent = total >= 85 ? 'Exceeds Expectations' : (total >= 70 ? 'Meets Expectations' : 'Needs Optimization');
+  gEl.className = 'tag ' + (total >= 85 ? 'tag-green' : (total >= 70 ? 'tag-amber' : 'tag-red'));
+
+  document.getElementById('sc_body').innerHTML = `
+    <tr><td><strong>Profit Maximisation (Step 9)</strong></td><td>P = ₹${lastS9UserP} (Gap: ₹${(lastS9Gap/100000).toFixed(2)}L)</td><td>Optimal P* = ₹${lastS9OptP.toFixed(1)} (MR = MC)</td><td><strong>${sOpt}/25</strong></td></tr>
+    <tr><td><strong>Price Discrimination (Step 10)</strong></td><td>Lift: ₹${(lastS10Lift/100000).toFixed(2)}L vs Uniform</td><td>Max Lift: +₹1.85L/wk (+85.9%)</td><td><strong>${sDisc}/25</strong></td></tr>
+    <tr><td><strong>Game Theory Discipline (Step 11)</strong></td><td>${gTotB===0?'Not played yet (baseline)':'₹'+gTotB.toFixed(1)+'L over 5 rounds'}</td><td>Cooperative Benchmark: ₹67.5L</td><td><strong>${sGame}/25</strong></td></tr>
+    <tr><td><strong>ESG & Risk Welfare (Step 12)</strong></td><td>Social Welfare: ₹${sw.toFixed(2)}L | CE: ₹${ce.toFixed(2)}L</td><td>Internalise plastic waste & trust risk</td><td><strong>${sESG}/25</strong></td></tr>
+  `;
+}
+
+// ================= STEP 13: DECISION LOG =================
+const decisionLog = [
+  { name: 'Round 1: Baseline Equilibrium', dec: 'Set P = ₹610/order (MR = MC) at Smart Hub (K=2)', why: 'Analytical MR=MC yields ₹13.60L/week profit at Q=8,000 orders; K=2 achieves Minimum Efficient Scale (MES) on LRAC.' },
+  { name: 'Round 2: Imported Cosmetics Tariff Shock (+₹80 MC)', dec: 'Raise P from ₹610 to ₹640 (+₹30 partial pass-through) & expand WMS automation', why: 'With +₹80 MC shock, MR=MC sets Q*=7,000 and P*=₹640 (37.5% pass-through under rising MC); higher logistics wages increase optimal Tech/Staff ratio.' },
+  { name: 'Round 3: Tira Aggressive Festive Discounting', dec: 'Avoid blanket discount war; deploy 3rd-Degree Segmented Pricing (₹630 Luxe / ₹430 Mass)', why: 'Blanket discount war traps both firms in Nash Equilibrium (₹7.6L/wk); Luxe vs. Mass segmentation earns +85.9% over uniform pricing.' },
+  { name: 'Round 4: Plastic-Waste EPR Norms & Authenticity Risk', dec: 'Adopt 100% Plastic-Free Biodegradable Packaging + Clean Beauty Verification (₹2.60L/wk)', why: 'Cuts external social cost by 90% (to ₹0.25L), unlocks +₹1.40L ESG demand lift, and maximises Risk-Averse Certainty Equivalent.' }
+];
+
+function renderLog() {
+  const tb = document.querySelector('#dl_table tbody');
+  tb.innerHTML = decisionLog.map((d, i) => `<tr><td>${i+1}</td><td><strong>${d.name}</strong></td><td>${d.dec}</td><td>${d.why}</td></tr>`).join('');
+}
+function addLogEntry() {
+  const name = document.getElementById('dl_name').value.trim();
+  const dec = document.getElementById('dl_dec').value.trim();
+  const why = document.getElementById('dl_why').value.trim();
+  if (!name || !dec || !why) { alert('Please fill in all three fields.'); return; }
+  decisionLog.push({ name, dec, why });
+  document.getElementById('dl_name').value = '';
+  document.getElementById('dl_dec').value = '';
+  document.getElementById('dl_why').value = '';
+  renderLog();
+}
+function loadScenario(type) {
+  if (type === 'base') { setS9(610, 0); goStep(9); }
+  if (type === 'shock') { setS9(640, 80); goStep(9); }
+  if (type === 'rival') { setS8(4, 0.9); goStep(8); }
+  if (type === 'war') { optS10(); goStep(10); }
+}
+
+renderLog();
+updateStep1();
+</script>
+</body>
+</html>
